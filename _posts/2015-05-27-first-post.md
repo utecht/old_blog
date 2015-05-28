@@ -1,10 +1,10 @@
 ---
 layout: post
-title: First Post
+title: Formatting Test Post
 tags: test
 ---
 
-This is a test post.
+This is a post to test various formatting.
 
 Here is some python
 {% highlight python %}
@@ -30,3 +30,13 @@ with open("movies.xml", "w") as f:
 	f.write(g.serialize(format="xml"))
 print("wrote xml")
 {% endhighlight %}
+
+Markdown | Less | Pretty
+--- | --- | ---
+*Still* | `renders` | **nicely**
+1 | 2 | 3
+
+> this is a block quote
+> this is still part of the block quote?
+
+> this is another line in the block quote
