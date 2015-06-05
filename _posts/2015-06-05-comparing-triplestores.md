@@ -79,7 +79,7 @@ Compared to all the others the virtuoso admin interface is very confusing, and t
 ===
 The first step after finishing basic set up of the triplestores was to attempt to load something into them and start querying it.  I was looking for a decently sized dataset with data that was not hard to understand to people outside the discipline.  I settled on the [Linked Movie Database dataset](http://datahub.io/dataset/linkedmdb) as it fulfilled all these requirements.  It is a set of roughly 600k triples in the N-triples format.
 
-{% highlight n3 %}
+{% highlight xml %}
 <http://data.linkedmdb.org/resource/interlink/36322> <http://data.linkedmdb.org/resource/oddlinker/linkage_run> <http://data.linkedmdb.org/resource/linkage_run/1> .
 <http://data.linkedmdb.org/resource/film_cut/30648> <http://xmlns.com/foaf/0.1/page> <http://www.freebase.com/view/guid/9202a8c04000641f800000000b4dedc5> .
 <http://data.linkedmdb.org/resource/performance/25260> <http://data.linkedmdb.org/resource/movie/performance_character> "" .
@@ -147,7 +147,7 @@ While investigating virtuoso's query interface I was having trouble finding a qu
 For my purposes this was the most important feature of these triplestores as it would be the only way the application would interact with the data.  I had need of both the ability to query and update the data in the store from a client-side javascript application.  Unfortunately due to the nature of RDF working directly client to triplestore is difficult.  In traditional RESTful APIs collections of members can be retrieved and then all properties of each member can be retrieved independently.  Because of the graph nature of RDF neither of these works quite the same from a REST point of view.  Take for example a graph storing information about books with this simple structure.
 
 
-{% highlight turtle %}
+{% highlight xml %}
 @prefix book: <http://example.com/book/> .
 @prefix author: <http://example.com/author/> .
 
@@ -228,7 +228,7 @@ This naive query produces results that are somewhat difficult to work with, as y
 
 
 With knowledge of the data you can produce a much more refined SPARQL query to pull just the information that you want.
-{% highlight sparql %}
+{% highlight html %}
 PREFIX book:<http://example.com/book/>
 PREFIX author:<http://example.com/author/>
 
