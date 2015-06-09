@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width initial-scale=1" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Utecht Blog</title>
+    <title>The Vimer a Vim Primer</title>
     <meta name="description" content="Some musings about coding. Currently exploring graph datastores.
 ">
 
     <link rel="stylesheet" href="/css/main.css">
-    <link rel="canonical" href="http://utecht.github.io/">
+    <link rel="canonical" href="http://utecht.github.io/vimer">
 </head>
 
 
@@ -54,39 +54,49 @@
 
     <div class="page-content">
       <div class="wrapper">
-        <div class="home">
+        <div class="post">
 
-  <h1 class="page-heading">Posts</h1>
+  <header class="post-header">
+    <h1 class="post-title">The Vimer a Vim Primer</h1>
+    <p class="post-meta">Jun 9, 2015</p>
+  </header>
 
-  <ul class="post-list">
-    
-      <li>
-        <span class="post-meta">Jun 9, 2015</span>
+  <article class="post-content">
+    <p>So you accidentally opened vim can’t figure out how to close it and now are here.</p>
 
-        <h2>
-          <a class="post-link" href="/vimer">The Vimer a Vim Primer</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jun 5, 2015</span>
+<h3 id="dont-panic">Don’t Panic</h3>
 
-        <h2>
-          <a class="post-link" href="/triplestores">Comparing Triplestores</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">May 27, 2015</span>
+<p>Vim is easier than it looks and you will be well on your way to using it as well as any normal text editor in less than a minute.</p>
 
-        <h2>
-          <a class="post-link" href="/2015/05/27/first-post.html">Formatting Test Post</a>
-        </h2>
-      </li>
-    
-  </ul>
+<h3 id="esc-is-your-friend">ESC is your friend</h3>
 
-  <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
+<p>Assuming you hit a bunch of random keys when you first opened it, the first thing you probably need to do is spam the ESC key until it looks like it will behave.</p>
+
+<h3 id="welcome-to-command-mode">Welcome to Command Mode</h3>
+
+<p>You should hopefully now be in command mode, where you issue commands.  Vim has lots of commands, whole desktop wallpapers worth, we don’t care about any of those.  We just want to move around and edit some text.</p>
+
+<h3 id="h-j-k-l---basic-movement">h, j, k, l -&gt; Basic movement</h3>
+
+<p>These keys will move your cursor around, you can also use the arrow keys if your brain refuses to think of j as up.</p>
+
+<h3 id="i---insert-mode">i -&gt; insert mode</h3>
+
+<p>Welcome to your second mode in Vim, pressing the i key will put you in insert mode, now you can type out text like you are used to.  Whenever you are done you probably want to save it though so remember our friend the ESC key, jam him 5 or 6 times just to be safe to move back to command mode.</p>
+
+<h3 id="w---write">:w -&gt; write</h3>
+
+<p>When you are in command mode (you did hit ESC 6 times right) type :w and hit enter.  That should spit out some text at the bottom about how you wrote to some file.</p>
+
+<h3 id="q---quit">:q -&gt; quit</h3>
+
+<p>Looks like we are done here, while in command mode (hit ESC 7 or 12 times just to be sure) :q and enter will quit.  For convenience you can put :w and :q together like :wq to save and quit at the same time.</p>
+
+<h2 id="congratulations">Congratulations</h2>
+
+<p>You can now use vim just as well as any other text editor.</p>
+
+  </article>
 
 </div>
 
