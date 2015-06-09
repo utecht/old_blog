@@ -6,8 +6,8 @@
 </description>
     <link>http://utecht.github.io/</link>
     <atom:link href="http://utecht.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 09 Jun 2015 15:12:39 -0500</pubDate>
-    <lastBuildDate>Tue, 09 Jun 2015 15:12:39 -0500</lastBuildDate>
+    <pubDate>Tue, 09 Jun 2015 15:34:25 -0500</pubDate>
+    <lastBuildDate>Tue, 09 Jun 2015 15:34:25 -0500</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -16,15 +16,15 @@
 
 &lt;h3 id=&quot;dont-panic&quot;&gt;Don’t Panic&lt;/h3&gt;
 
-&lt;p&gt;Vim is easier than it looks and you will be well on your way to using it as well as any normal text editor in less than a minute.&lt;/p&gt;
+&lt;p&gt;Vim is easier than it looks and you will be on your way to using it as well as any normal text editor in less than a minute.&lt;/p&gt;
 
 &lt;h3 id=&quot;esc-is-your-friend&quot;&gt;ESC is your friend&lt;/h3&gt;
 
-&lt;p&gt;Assuming you hit a bunch of random keys when you first opened it, the first thing you probably need to do is spam the ESC key until it looks like it will behave.&lt;/p&gt;
+&lt;p&gt;Assuming you hit a bunch of random keys when you first opened it, the first thing you probably need to do is spam the &lt;em&gt;ESC&lt;/em&gt; key until it looks like it will behave.&lt;/p&gt;
 
 &lt;h3 id=&quot;welcome-to-command-mode&quot;&gt;Welcome to Command Mode&lt;/h3&gt;
 
-&lt;p&gt;You should hopefully now be in command mode, where you issue commands.  Vim has lots of commands, whole desktop wallpapers worth, we don’t care about any of those.  We just want to move around and edit some text.&lt;/p&gt;
+&lt;p&gt;You should hopefully now be in command mode…. where you issue commands.  Vim has lots of commands, whole desktop wallpapers worth, we don’t care about any of those.  We just want to move around and edit some text.&lt;/p&gt;
 
 &lt;h3 id=&quot;h-j-k-l---basic-movement&quot;&gt;h, j, k, l -&amp;gt; Basic movement&lt;/h3&gt;
 
@@ -32,19 +32,43 @@
 
 &lt;h3 id=&quot;i---insert-mode&quot;&gt;i -&amp;gt; insert mode&lt;/h3&gt;
 
-&lt;p&gt;Welcome to your second mode in Vim, pressing the i key will put you in insert mode, now you can type out text like you are used to.  Whenever you are done you probably want to save it though so remember our friend the ESC key, jam him 5 or 6 times just to be safe to move back to command mode.&lt;/p&gt;
+&lt;p&gt;Welcome to your second mode in Vim, pressing the &lt;em&gt;i&lt;/em&gt; key will put you in insert mode, now you can type out text like you are used to.  Whenever you are done you probably want to save it though so remember our friend the &lt;em&gt;ESC&lt;/em&gt; key, jam him 5 or 6 times just to be safe to move back to command mode.&lt;/p&gt;
 
 &lt;h3 id=&quot;w---write&quot;&gt;:w -&amp;gt; write&lt;/h3&gt;
 
-&lt;p&gt;When you are in command mode (you did hit ESC 6 times right) type :w and hit enter.  That should spit out some text at the bottom about how you wrote to some file.&lt;/p&gt;
+&lt;p&gt;When you are in command mode (you did hit &lt;em&gt;ESC&lt;/em&gt; 6 times right) type &lt;em&gt;:w&lt;/em&gt; and hit enter.  That should spit out some text at the bottom about how you wrote to some file.&lt;/p&gt;
 
 &lt;h3 id=&quot;q---quit&quot;&gt;:q -&amp;gt; quit&lt;/h3&gt;
 
-&lt;p&gt;Looks like we are done here, while in command mode (hit ESC 7 or 12 times just to be sure) :q and enter will quit.  For convenience you can put :w and :q together like :wq to save and quit at the same time.&lt;/p&gt;
+&lt;p&gt;Looks like we are done here, while in command mode (hit &lt;em&gt;ESC&lt;/em&gt; 7 or 12 times just to be sure) &lt;em&gt;:q&lt;/em&gt; and enter will quit.  For convenience you can put &lt;em&gt;:w&lt;/em&gt; and &lt;em&gt;:q&lt;/em&gt; together like &lt;em&gt;:wq&lt;/em&gt; to save and quit at the same time.&lt;/p&gt;
 
 &lt;h2 id=&quot;congratulations&quot;&gt;Congratulations&lt;/h2&gt;
 
 &lt;p&gt;You can now use vim just as well as any other text editor.&lt;/p&gt;
+
+&lt;h3 id=&quot;advanced-vimer&quot;&gt;Advanced Vimer&lt;/h3&gt;
+
+&lt;p&gt;But wait you ask, what about copy/paste and finding/replacing text, my normal text editor does those, can’t the mighty Vim.&lt;/p&gt;
+
+&lt;h3 id=&quot;v---visual-mode&quot;&gt;v -&amp;gt; visual mode&lt;/h3&gt;
+
+&lt;p&gt;If you want to copy and paste some text, the first thing you probably want to do is select the text to be copied, an intuitive way to do this in vim is to use Visual mode.  While in command mode you can press &lt;em&gt;v&lt;/em&gt; to enter visual mode.  While in visual mode you will be able to highlight text and commands you type will normally happen against the selected text, for example copying.&lt;/p&gt;
+
+&lt;h3 id=&quot;y---copy-yank&quot;&gt;y -&amp;gt; copy (yank)&lt;/h3&gt;
+
+&lt;p&gt;With text highlighted you can press the &lt;em&gt;y&lt;/em&gt; key in visual mode to copy the selected text.  If full lines of text are your thing you can press &lt;em&gt;yy&lt;/em&gt; in command mode to copy the entire current line.&lt;/p&gt;
+
+&lt;h3 id=&quot;p---paste&quot;&gt;p -&amp;gt; paste&lt;/h3&gt;
+
+&lt;p&gt;Pasting is as simple as pressing &lt;em&gt;p&lt;/em&gt; in the right place, while in command mode.&lt;/p&gt;
+
+&lt;h3 id=&quot;finding&quot;&gt;/ -&amp;gt; finding&lt;/h3&gt;
+
+&lt;p&gt;While in command mode, you can use the &lt;em&gt;/&lt;/em&gt; command followed by text to search the currently open file for it.  By default it will search from the top of the file, when you have put in the text you want to search for you can press enter to move the cursor to the first instance, from here you can use &lt;em&gt;n&lt;/em&gt; to move forward and &lt;em&gt;N&lt;/em&gt; to move backwards.  You will often find that the upper case version of a command in Vim will do the &lt;em&gt;reverse&lt;/em&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;sfindreplaceg---findreplace&quot;&gt;:%s/find/replace/g -&amp;gt; find/replace&lt;/h3&gt;
+
+&lt;p&gt;This command is a little complex, but extremely powerful.  Like all things that start with : this is run from command mode, however it can be run from visual mode as well if you drop the %.  In the example we are replacing all instances of &lt;em&gt;find&lt;/em&gt; with &lt;em&gt;replace&lt;/em&gt;.  You can put regular expressions into this allowing you some very powerful finding/replacing.&lt;/p&gt;
 </description>
         <pubDate>Tue, 09 Jun 2015 00:00:00 -0500</pubDate>
         <link>http://utecht.github.io/vimer</link>

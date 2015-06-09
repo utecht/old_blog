@@ -66,15 +66,15 @@
 
 <h3 id="dont-panic">Don’t Panic</h3>
 
-<p>Vim is easier than it looks and you will be well on your way to using it as well as any normal text editor in less than a minute.</p>
+<p>Vim is easier than it looks and you will be on your way to using it as well as any normal text editor in less than a minute.</p>
 
 <h3 id="esc-is-your-friend">ESC is your friend</h3>
 
-<p>Assuming you hit a bunch of random keys when you first opened it, the first thing you probably need to do is spam the ESC key until it looks like it will behave.</p>
+<p>Assuming you hit a bunch of random keys when you first opened it, the first thing you probably need to do is spam the <em>ESC</em> key until it looks like it will behave.</p>
 
 <h3 id="welcome-to-command-mode">Welcome to Command Mode</h3>
 
-<p>You should hopefully now be in command mode, where you issue commands.  Vim has lots of commands, whole desktop wallpapers worth, we don’t care about any of those.  We just want to move around and edit some text.</p>
+<p>You should hopefully now be in command mode…. where you issue commands.  Vim has lots of commands, whole desktop wallpapers worth, we don’t care about any of those.  We just want to move around and edit some text.</p>
 
 <h3 id="h-j-k-l---basic-movement">h, j, k, l -&gt; Basic movement</h3>
 
@@ -82,19 +82,43 @@
 
 <h3 id="i---insert-mode">i -&gt; insert mode</h3>
 
-<p>Welcome to your second mode in Vim, pressing the i key will put you in insert mode, now you can type out text like you are used to.  Whenever you are done you probably want to save it though so remember our friend the ESC key, jam him 5 or 6 times just to be safe to move back to command mode.</p>
+<p>Welcome to your second mode in Vim, pressing the <em>i</em> key will put you in insert mode, now you can type out text like you are used to.  Whenever you are done you probably want to save it though so remember our friend the <em>ESC</em> key, jam him 5 or 6 times just to be safe to move back to command mode.</p>
 
 <h3 id="w---write">:w -&gt; write</h3>
 
-<p>When you are in command mode (you did hit ESC 6 times right) type :w and hit enter.  That should spit out some text at the bottom about how you wrote to some file.</p>
+<p>When you are in command mode (you did hit <em>ESC</em> 6 times right) type <em>:w</em> and hit enter.  That should spit out some text at the bottom about how you wrote to some file.</p>
 
 <h3 id="q---quit">:q -&gt; quit</h3>
 
-<p>Looks like we are done here, while in command mode (hit ESC 7 or 12 times just to be sure) :q and enter will quit.  For convenience you can put :w and :q together like :wq to save and quit at the same time.</p>
+<p>Looks like we are done here, while in command mode (hit <em>ESC</em> 7 or 12 times just to be sure) <em>:q</em> and enter will quit.  For convenience you can put <em>:w</em> and <em>:q</em> together like <em>:wq</em> to save and quit at the same time.</p>
 
 <h2 id="congratulations">Congratulations</h2>
 
 <p>You can now use vim just as well as any other text editor.</p>
+
+<h3 id="advanced-vimer">Advanced Vimer</h3>
+
+<p>But wait you ask, what about copy/paste and finding/replacing text, my normal text editor does those, can’t the mighty Vim.</p>
+
+<h3 id="v---visual-mode">v -&gt; visual mode</h3>
+
+<p>If you want to copy and paste some text, the first thing you probably want to do is select the text to be copied, an intuitive way to do this in vim is to use Visual mode.  While in command mode you can press <em>v</em> to enter visual mode.  While in visual mode you will be able to highlight text and commands you type will normally happen against the selected text, for example copying.</p>
+
+<h3 id="y---copy-yank">y -&gt; copy (yank)</h3>
+
+<p>With text highlighted you can press the <em>y</em> key in visual mode to copy the selected text.  If full lines of text are your thing you can press <em>yy</em> in command mode to copy the entire current line.</p>
+
+<h3 id="p---paste">p -&gt; paste</h3>
+
+<p>Pasting is as simple as pressing <em>p</em> in the right place, while in command mode.</p>
+
+<h3 id="finding">/ -&gt; finding</h3>
+
+<p>While in command mode, you can use the <em>/</em> command followed by text to search the currently open file for it.  By default it will search from the top of the file, when you have put in the text you want to search for you can press enter to move the cursor to the first instance, from here you can use <em>n</em> to move forward and <em>N</em> to move backwards.  You will often find that the upper case version of a command in Vim will do the <em>reverse</em>.</p>
+
+<h3 id="sfindreplaceg---findreplace">:%s/find/replace/g -&gt; find/replace</h3>
+
+<p>This command is a little complex, but extremely powerful.  Like all things that start with : this is run from command mode, however it can be run from visual mode as well if you drop the %.  In the example we are replacing all instances of <em>find</em> with <em>replace</em>.  You can put regular expressions into this allowing you some very powerful finding/replacing.</p>
 
   </article>
 
