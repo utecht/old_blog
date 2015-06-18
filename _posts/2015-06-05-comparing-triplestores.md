@@ -312,91 +312,182 @@ Results in the following json block are somewhat like the naive query seen above
 
 <a name="features"></a>RDF Feature Support
 ===
-When I speak of RDF features I mean any possible inference or reasoning that the triplestore can do based on any ontologies that have been loaded into the store.  Inferences and reasoning are similar but quite distinct things.  Inference generally refers 
+When I speak of RDF features I mean any possible inference or reasoning that the triplestore can do based on any ontologies that have been loaded into the store.  Inferences and reasoning are similar but quite distinct things.  Inference generally refers RDF level types and classes being represented in the stored triples, while reasoning is applying an OWL reasoner to support more advanced constructs such as owl:sameAs.
 
 #### Fuseki
+The Jena engine has the largest coverage of both reasoning engines and inference models.  Both reasoning and inference are performed with query modification or virtual triples.  This results in slower queries with heavy reasoning or inference, but allows great flexibility.
 
-#### Blazegraph
-
-#### Sesame
+#### Blazegraph and Sesame
+Blazegraph and Sesame both only support RDF level materialized inference.  This results in very fast processsing of queries with slightly slower loading speeds, and a certain intractability to the RDF class structure of the data.
 
 <a name="performance"></a>Performance
 ===
 
+Performance testing was done using the [Lehigh University Benchmark](http://swat.cse.lehigh.edu/projects/lubm/).  This is a generated dataset and a set of [14 SPARQL queries](http://swat.cse.lehigh.edu/projects/lubm/queries-sparql.txt) that test the performance and reasoning/inference capabilities of a triple store.  
+
+| Query | Fuseki | Blazegraph | Sesame |
+| 1 | 0.79 | 0.08 | 0.08 |
+| 2 | 208.62 | 0.05 | 0.01 |
+| 3 | 0.07 | 0.01 | 0.01 |
+| 4 | 15.47 | 0.02 | 0.06 |
+| 5 | 0.24 | 0.06 | 0.03 |
+| 6 | 0.22 | 0.21 | 0.08 |
+| 7 | 59.68 | 0.02 | 0.30 |
+| 8 | 2.84 | 0.30 | 1.16 |
+| 9 | 17.46 | 0.05 | 0.05 |
+| 10 | 0.06 | 0.03 | 0.01 |
+| 11 | 0.03 | 0.02 | 0.01 |
+| 12 | 0.01 | 0.02 | 0.00 |
+| 13 | 0.19 | 0.02 | 0.00 |
+| 14 | 0.07 | 0.05 | 0.05 |
+
+
 #### Fuseki
-306.289955139
-25671
-[(1, 0.790107011795044, 4),
- (2, 208.629891872406, 0),
- (3, 0.07398486137390137, 6),
- (4, 15.47076416015625, 34),
- (5, 0.24315094947814941, 719),
- (6, 0.22413897514343262, 7790),
- (7, 59.6851270198822, 67),
- (8, 2.8402278423309326, 7790),
- (9, 17.46268606185913, 3101),
- (10, 0.06717896461486816, 4),
- (11, 0.33838987350463867, 224),
- (12, 0.016556978225708008, 15),
- (13, 0.19131088256835938, 1),
- (14, 0.07552194595336914, 5916)]
+Multiple results are listed here for different levels of reasoning and inference with Jena.
+
+OWL MEM MICRO_RULE_INF
+
+This is described as an optimised rule-based reasoner with OWL full rules.  It has the slowest performance of any rule set or environment, however it is the only thing that returns the correct results for all queries.
+
+Time - 306.289955139
+
+Total Results - 25671
+
+| Query# | Runtime | Results |
+| 1 | 0.790 | 4 |
+| 2 | **208.6** | 0 |
+| 3 | 0.073 | 6 |
+| 4 | **15.47** | 34 |
+| 5 | 0.243 | 719 |
+| 6 | 0.224 | 7790 |
+| 7 | **59.68** | 67 |
+| 8 | **2.840** | 7790 |
+| 9 | **17.46** | 3101 |
+| 10 | 0.067 | 4 |
+| 11 | 0.338 | 224 |
+| 12 | 0.016 | 15 |
+| 13 | 0.191 | 1 |
+| 14 | 0.075 | 5916 |
+
+RDFS_MEM_RDFS_INF
+
+RDFS inference mode is performing the same level of inference as the other two triple stores, however this is performed in memory as opposed to materializing the triples at the time of data load resulting in much worse performance.
+
+Time - 249.190382004
+
+Total Results - 19797
+
+| Query# | Runtime | Results |
+| 1 | 0.282 | 4 |
+| 2 | **191.8** | 0 |
+| 3 | 0.089 | 6 |
+| 4 | 0.044 | 34 |
+| 5 | 0.385 | 719 |
+| 6 | 0.218 | 5916 |
+| 7 | **42.85** | 59 |
+| 8 | **1.961** | 5916 |
+| 9 | **11.19** | 1227 |
+| 10 | 0.046 | 0 |
+| 11 | 0.011 | 0 |
+| 12 | 0.008 | 0 |
+| 13 | 0.038 | 0 |
+| 14 | 0.081 | 5916 |
+
+RDFS_MEM
+
+Here no reasoning is used which get much closer to testing the raw performance of the triple store.
+
+Time - 56.2234978676
+
+Total Results - 5926
+
+| Query# | Runtime | Results |
+| 1 | 0.187 | 4 |
+| 2 | **55.64** | 0 |
+| 3 | 0.034 | 6 |
+| 4 | 0.011 | 0 |
+| 5 | 0.013 | 0 |
+| 6 | 0.009 | 0 |
+| 7 | 0.009 | 0 |
+| 8 | 0.010 | 0 |
+| 9 | 0.010 | 0 |
+| 10 | 0.009 | 0 |
+| 11 | 0.011 | 0 |
+| 12 | 0.010 | 0 |
+| 13 | 0.009 | 0 |
+| 14 | 0.221 | 5916 |
+
 
 
 #### Blazegraph
-1.15243792534
-20022
-[(1, 0.08640193939208984, 4),
- (2, 0.05627107620239258, 0),
- (3, 0.01681208610534668, 6),
- (4, 0.029659032821655273, 34),
- (5, 0.060669898986816406, 719),
- (6, 0.21103501319885254, 5916),
- (7, 0.02584695816040039, 59),
- (8, 0.3054811954498291, 5916),
- (9, 0.053277015686035156, 1227),
- (10, 0.036891937255859375, 0),
- (11, 0.024561166763305664, 224),
- (12, 0.02623581886291504, 0),
- (13, 0.025279998779296875, 1),
- (14, 0.05089092254638672, 5916)]
+Blazegraph was run in triple mode with inference turned on for this graph.  Blazegraph had the best performance and returned more correct results than sesame which was running in the same inference mode.
+
+Time - 1.15243792534
+
+Total Results - 20022
+
+| Query# | Runtime | Results |
+| 1 | 0.086 | 4 |
+| 2 | 0.056 | 0 |
+| 3 | 0.016 | 6 |
+| 4 | 0.029 | 34 |
+| 5 | 0.060 | 719 |
+| 6 | 0.211 | 5916 |
+| 7 | 0.025 | 59 |
+| 8 | 0.305 | 5916 |
+| 9 | 0.053 | 1227 |
+| 10 | 0.036 | 0 |
+| 11 | 0.024 | 224 |
+| 12 | 0.026 | 0 |
+| 13 | 0.025 | 1 |
+| 14 | 0.050 | 5916 |
 
 
 #### Sesame
-3.34652090073
-117311
-[(1, 0.08869194984436035, 16),
- (2, 0.012494087219238281, 0),
- (3, 0.011488199234008789, 24),
- (4, 0.0656890869140625, 544),
- (5, 0.0395810604095459, 1397),
- (6, 0.08309388160705566, 5916),
- (7, 0.01765298843383789, 472),
- (8, 1.1609258651733398, 94656),
- (9, 0.054110050201416016, 2454),
- (10, 0.01034092903137207, 0),
- (11, 0.008022069931030273, 0),
- (12, 0.009330034255981445, 0),
- (13, 0.008165121078491211, 0),
- (14, 0.054193973541259766, 11832)]
+Sesame had a problem returning duplicate results, which can be seen here with the greatly inflated number of results returned. 
 
-With DISTINCT
+Time - 3.34652090073
 
-1.57800793648
-19797
-[(1, 0.03316092491149902, 4),
- (2, 0.012684106826782227, 0),
- (3, 0.009427070617675781, 6),
- (4, 0.01783299446105957, 34),
- (5, 0.025794029235839844, 719),
- (6, 0.07168388366699219, 5916),
- (7, 0.01610708236694336, 59),
- (8, 1.0608909130096436, 5916),
- (9, 0.08370184898376465, 1227),
- (10, 0.008751153945922852, 0),
- (11, 0.007914066314697266, 0),
- (12, 0.00789785385131836, 0),
- (13, 0.007750034332275391, 0),
- (14, 0.0695040225982666, 5916)]
+Total Results - 117311
+
+| Query# | Runtime | Results |
+| 1 | 0.088 | 16 |
+| 2 | 0.012 | 0 |
+| 3 | 0.011 | 24 |
+| 4 | 0.065 | 544 |
+| 5 | 0.039 | 1397 |
+| 6 | 0.083 | 5916 |
+| 7 | 0.017 | 472 |
+| 8 | **1.160** | 94656 |
+| 9 | 0.054 | 2454 |
+| 10 | 0.010 | 0 |
+| 11 | 0.008 | 0 |
+| 12 | 0.009 | 0 |
+| 13 | 0.008 | 0 |
+| 14 | 0.054 | 11832 |
+
+
+Adding DISTINCT to the query brough the numbers much closer to the other triple stores, however it will stll missing data on query 11 and query 13, when compared to inference mode in Jena and Blazegraph.
+
+Time - 1.57800793648
+
+Total Results - 19797
+
+| Query# | Runtime | Results |
+| 1 | 0.033 | 4 |
+| 2 | 0.012 | 0 |
+| 3 | 0.009 | 6 |
+| 4 | 0.017 | 34 |
+| 5 | 0.025 | 719 |
+| 6 | 0.071 | 5916 |
+| 7 | 0.016 | 59 |
+| 8 | **1.060** | 5916 |
+| 9 | 0.083 | 1227 |
+| 10 | 0.008 | 0 |
+| 11 | 0.007 | 0 |
+| 12 | 0.007 | 0 |
+| 13 | 0.007 | 0 |
+| 14 | 0.069 | 5916 |
 
 <a name="prod"></a>Production Readiness
 ===
