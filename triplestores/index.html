@@ -382,29 +382,647 @@ And then a second set of endpoints for authors.
 <span class="p">}</span></code></pre></div>
 
 <h1 id="a-namefeaturesardf-feature-support"><a name="features"></a>RDF Feature Support</h1>
-<p>When I speak of RDF features I mean any possible inference or reasoning that the triplestore can do based on any ontologies that have been loaded into the store.  Inferences and reasoning are similar but quite distinct things.  Inference generally refers </p>
+<p>When I speak of RDF features I mean any possible inference or reasoning that the triplestore can do based on any ontologies that have been loaded into the store.  Inferences and reasoning are similar but quite distinct things.  Inference generally refers RDF level types and classes being represented in the stored triples, while reasoning is applying an OWL reasoner to support more advanced constructs such as owl:sameAs.</p>
 
 <h4 id="fuseki-5">Fuseki</h4>
+<p>The Jena engine has the largest coverage of both reasoning engines and inference models.  Both reasoning and inference are performed with query modification or virtual triples.  This results in slower queries with heavy reasoning or inference, but allows great flexibility.</p>
 
-<h4 id="blazegraph-5">Blazegraph</h4>
-
-<h4 id="sesame-5">Sesame</h4>
+<h4 id="blazegraph-and-sesame">Blazegraph and Sesame</h4>
+<p>Blazegraph and Sesame both only support RDF level materialized inference.  This results in very fast processsing of queries with slightly slower loading speeds, and a certain intractability to the RDF class structure of the data.</p>
 
 <h1 id="a-nameperformanceaperformance"><a name="performance"></a>Performance</h1>
 
+<p>Performance testing was done using the <a href="http://swat.cse.lehigh.edu/projects/lubm/">Lehigh University Benchmark</a>.  This is a generated dataset and a set of <a href="http://swat.cse.lehigh.edu/projects/lubm/queries-sparql.txt">14 SPARQL queries</a> that test the performance and reasoning/inference capabilities of a triple store.  </p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Query</td>
+      <td>Fuseki</td>
+      <td>Blazegraph</td>
+      <td>Sesame</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.79</td>
+      <td>0.08</td>
+      <td>0.08</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>208.62</td>
+      <td>0.05</td>
+      <td>0.01</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.07</td>
+      <td>0.01</td>
+      <td>0.01</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>15.47</td>
+      <td>0.02</td>
+      <td>0.06</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>0.24</td>
+      <td>0.06</td>
+      <td>0.03</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>0.22</td>
+      <td>0.21</td>
+      <td>0.08</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>59.68</td>
+      <td>0.02</td>
+      <td>0.30</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>2.84</td>
+      <td>0.30</td>
+      <td>1.16</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>17.46</td>
+      <td>0.05</td>
+      <td>0.05</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>0.06</td>
+      <td>0.03</td>
+      <td>0.01</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>0.03</td>
+      <td>0.02</td>
+      <td>0.01</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>0.01</td>
+      <td>0.02</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>0.19</td>
+      <td>0.02</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>0.07</td>
+      <td>0.05</td>
+      <td>0.05</td>
+    </tr>
+  </tbody>
+</table>
+
 <h4 id="fuseki-6">Fuseki</h4>
+<p>Multiple results are listed here for different levels of reasoning and inference with Jena.</p>
 
-<h4 id="blazegraph-6">Blazegraph</h4>
+<p>OWL MEM MICRO_RULE_INF</p>
 
-<h4 id="sesame-6">Sesame</h4>
+<p>This is described as an optimised rule-based reasoner with OWL full rules.  It has the slowest performance of any rule set or environment, however it is the only thing that returns the correct results for all queries.</p>
+
+<p>Time - 306.289955139</p>
+
+<p>Total Results - 25671</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Query#</td>
+      <td>Runtime</td>
+      <td>Results</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.790</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><strong>208.6</strong></td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.073</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td><strong>15.47</strong></td>
+      <td>34</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>0.243</td>
+      <td>719</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>0.224</td>
+      <td>7790</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td><strong>59.68</strong></td>
+      <td>67</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td><strong>2.840</strong></td>
+      <td>7790</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td><strong>17.46</strong></td>
+      <td>3101</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>0.067</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>0.338</td>
+      <td>224</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>0.016</td>
+      <td>15</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>0.191</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>0.075</td>
+      <td>5916</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>RDFS_MEM_RDFS_INF</p>
+
+<p>RDFS inference mode is performing the same level of inference as the other two triple stores, however this is performed in memory as opposed to materializing the triples at the time of data load resulting in much worse performance.</p>
+
+<p>Time - 249.190382004</p>
+
+<p>Total Results - 19797</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Query#</td>
+      <td>Runtime</td>
+      <td>Results</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.282</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><strong>191.8</strong></td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.089</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.044</td>
+      <td>34</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>0.385</td>
+      <td>719</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>0.218</td>
+      <td>5916</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td><strong>42.85</strong></td>
+      <td>59</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td><strong>1.961</strong></td>
+      <td>5916</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td><strong>11.19</strong></td>
+      <td>1227</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>0.046</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>0.011</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>0.008</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>0.038</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>0.081</td>
+      <td>5916</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>RDFS_MEM</p>
+
+<p>Here no reasoning is used which get much closer to testing the raw performance of the triple store.</p>
+
+<p>Time - 56.2234978676</p>
+
+<p>Total Results - 5926</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Query#</td>
+      <td>Runtime</td>
+      <td>Results</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.187</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><strong>55.64</strong></td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.034</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.011</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>0.013</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>0.009</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>0.009</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>0.010</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>0.010</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>0.009</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>0.011</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>0.010</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>0.009</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>0.221</td>
+      <td>5916</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="blazegraph-5">Blazegraph</h4>
+<p>Blazegraph was run in triple mode with inference turned on for this graph.  Blazegraph had the best performance and returned more correct results than sesame which was running in the same inference mode.</p>
+
+<p>Time - 1.15243792534</p>
+
+<p>Total Results - 20022</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Query#</td>
+      <td>Runtime</td>
+      <td>Results</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.086</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0.056</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.016</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.029</td>
+      <td>34</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>0.060</td>
+      <td>719</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>0.211</td>
+      <td>5916</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>0.025</td>
+      <td>59</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>0.305</td>
+      <td>5916</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>0.053</td>
+      <td>1227</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>0.036</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>0.024</td>
+      <td>224</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>0.026</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>0.025</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>0.050</td>
+      <td>5916</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="sesame-5">Sesame</h4>
+<p>Sesame had a problem returning duplicate results, which can be seen here with the greatly inflated number of results returned. </p>
+
+<p>Time - 3.34652090073</p>
+
+<p>Total Results - 117311</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Query#</td>
+      <td>Runtime</td>
+      <td>Results</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.088</td>
+      <td>16</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0.012</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.011</td>
+      <td>24</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.065</td>
+      <td>544</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>0.039</td>
+      <td>1397</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>0.083</td>
+      <td>5916</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>0.017</td>
+      <td>472</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td><strong>1.160</strong></td>
+      <td>94656</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>0.054</td>
+      <td>2454</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>0.010</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>0.008</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>0.009</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>0.008</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>0.054</td>
+      <td>11832</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Adding DISTINCT to the query brough the numbers much closer to the other triple stores, however it will stll missing data on query 11 and query 13, when compared to inference mode in Jena and Blazegraph.</p>
+
+<p>Time - 1.57800793648</p>
+
+<p>Total Results - 19797</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Query#</td>
+      <td>Runtime</td>
+      <td>Results</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.033</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0.012</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.009</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.017</td>
+      <td>34</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>0.025</td>
+      <td>719</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>0.071</td>
+      <td>5916</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>0.016</td>
+      <td>59</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td><strong>1.060</strong></td>
+      <td>5916</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>0.083</td>
+      <td>1227</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>0.008</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>0.007</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>0.007</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>0.007</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>0.069</td>
+      <td>5916</td>
+    </tr>
+  </tbody>
+</table>
 
 <h1 id="a-nameprodaproduction-readiness"><a name="prod"></a>Production Readiness</h1>
 
 <h4 id="fuseki-7">Fuseki</h4>
 
-<h4 id="blazegraph-7">Blazegraph</h4>
+<h4 id="blazegraph-6">Blazegraph</h4>
 
-<h4 id="sesame-7">Sesame</h4>
+<h4 id="sesame-6">Sesame</h4>
 
 
   </article>
