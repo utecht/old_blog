@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <title>
+         Comparing Triplestores
+        
+    </title>
+
+    <meta name="robots" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="cleartype" content="on">
+
+     <link rel="stylesheet" href="http://utecht.github.io//css/syntax.css" type='text/css'> 
+    <link rel="stylesheet" href="http://utecht.github.io//css/main.css" type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+    <link rel="alternate" type="application/rss+xml" title="Utecht Blog" href="http://utecht.github.io//feed.xml">
+
+</head>
+
+<body>
+    <header id="top" class="main-header">
+
+        <div class="module title color-1">
+            <h1><a href="http://utecht.github.io//">Utecht Blog</a></h1>
+        </div>
+
+        <div class="module description color-2">
+            Random thoughts and slightly collected notes about things I do.
+        </div>
+
+        <nav class="module main-menu color-4">
+            <a href="http://utecht.github.io//">Home</a>
+            <a href="http://utecht.github.io//about/">About</a>
+            <a href="http://utecht.github.io//contact/">Contact</a>
+        </nav>
+
+        <div class="module links color-3">
+            <a href="https://github.com/utecht" title="Profile in Github" target="_blank">github</a>
+            <a href="https://twitter.com/thenmal" title="Profile in Twitter" target="_blank">twitter</a>
+        </div>
+
+    </header>
+
+    <div class="main-content">
+
+    <article class="module color-3">
+        <h1>Comparing Triplestores</h1>
+        <hr>
+        <p>In looking into the world of triplestores there exists very little in the way of traditional web communities discussing and comparing them.  Most of the discussion appears to happen in academic journals, which would make sense as their widest use is in academia.  A good starting place is comparing some of the available triplestores with the goal of producing a modern web application that would ideally have a mostly javascript client-side that is querying and updating a triplestore on the backend.</p>
+
+<p>I picked a small sample of open source, actively maintained and easy to install stores to run through a series of tests.</p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>License</th>
+<th>Deployment</th>
+<th>Language</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><a href="http://jena.apache.org/index.html">Apache Fuseki</a></td>
+<td><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2</a></td>
+<td>Standalone or WAR</td>
+<td>Java</td>
+</tr>
+<tr>
+<td><a href="http://www.blazegraph.com/blazegraph">Blazegraph</a></td>
+<td>GPLv2 or commercial</td>
+<td>Standalone or WAR</td>
+<td>Java</td>
+</tr>
+<tr>
+<td><a href="http://rdf4j.org/">Sesame</a></td>
+<td>BSD</td>
+<td>WAR</td>
+<td>Java</td>
+</tr>
+<tr>
+<td><a href="http://virtuoso.openlinksw.com/dataspace/doc/dav/wiki/Main/">Virtuoso</a></td>
+<td>GPL</td>
+<td>Native</td>
+<td>C</td>
+</tr>
+</tbody></table>
+
+<p>Using these four I will compare them and discuss general merits that could be applied against any store you wish to test.  The categories will be.</p>
+
+<ul>
+<li> <a href="#conf">Installation/Configuration</a></li>
+<li> <a href="#admin">Admin Interface</a></li>
+<li> <a href="#loading">Data Loading</a></li>
+<li> <a href="#exploration">Data Exploration</a></li>
+<li> <a href="#REST">REST</a></li>
+<li> <a href="#features">Feature Support</a></li>
+<li> <a href="#performance">Performance</a></li>
+<li> <a href="#prod">Production Readiness</a></li>
+</ul>
+
+<h1 id="installation/configuration"><a name="conf"></a>Installation/Configuration</h1>
+
+<p>I wanted a similar environment for all of the testing, so I chose to deploy each of these into a Virtualbox VM with identical specs.  The host of these VMs was a mid 2012 Mac Pro with 2 x 2.4 Ghz 6-core Xeon processors and 16GB of ram.  Each VM was given 8GB of ram and 4 processors, and while performance tests were running only a single VM would be active at a time.  I chose CentOS 7 as the operating system and Tomcat as the application server for the stores that needed it.  Given the choice to run as a standalone or WAR file I used the WAR files with Tomcat.</p>
+
+<h4 id="fuseki">Fuseki</h4>
+
+<p>Fuseki is a web front-end provided for the Apache Jena RDF tools, I downloaded the <a href="http://jena.apache.org/download/index.cgi">Fuseki2 tar</a> and followed the rather terse <a href="http://jena.apache.org/documentation/fuseki2/fuseki-run.html#fuseki-as-a-web-application">installation instructions</a>.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">Fuseki as a Web Application
+
+Fuseki can run from a WAR file.
+
+FUSEKI_HOME is not applicable.
+
+FUSEKI_BASE defaults to /etc/fuseki which must be a writeable directory.
+It is initialised the first time Fuseki runs, including a Apache Shiro security
+file but this is only intended as a starting point.
+It restricts use of the admin UI to the local machine.
+</code></pre></div>
+<p>Dropping the WAR into Tomcat&#39;s folder and creating a /etc/fuseki folder with Tomcat as the owner appeared to do the trick, except that the admin interface was missing some elements.  It took some investigation through firefox&#39;s inspect element to see that it was attempting to load additional resources and was getting a 403 Forbidden from the server.  Investigating inside the /etc/fuseki folder there was a shiro.ini file with basic permissions set.  I&#39;ve never messed with Apache Shiro security, but my assumption was that by port forwarding into the VM the server didn&#39;t see the request as coming from localhost and was denying access.  As a simple fix I allowed all access by uncommenting the line to allow all access.  This solved the problem and I had full access to the admin interface.</p>
+
+<p>Installation was mostly straight forward, although due to my deployment setup on a VM I had some rather opaque security issues.</p>
+
+<h4 id="blazegraph">Blazegraph</h4>
+
+<p>Blazegraph was another simple Java webserver deployment.  Following the instructions <a href="http://www.blazegraph.com/download">here</a>, I extracted the WAR and dropped it in Tomcat&#39;s folder.  After restarting Tomcat the admin interface was fully accessible and working.</p>
+
+<h4 id="sesame">Sesame</h4>
+
+<p>Sesame had the most complete <a href="http://rdf4j.org/sesame/2.8/docs/using+sesame.docbook?view">installation instructions</a> and good descriptions of the different options for installation.  Sesame can be slightly confusing as it is used by other triplestores as middleware for programming interfaces or implementing REST, however it has a native triplestore built in and can function as a server on its own.  Installation was a simple matter of extracting the 2 WAR files into Tomcat&#39;s webapp folder and restarting.  After Tomcat launched back up both the SPARQL endpoint and the workbench were accessible. </p>
+
+<h4 id="virtuoso">Virtuoso</h4>
+
+<p>Virtuoso was the only non-Java server I was testing, however with any experience compiling software its installation should be a breeze.  The requirements to build are clearly listed with versions in the <a href="https://github.com/openlink/virtuoso-opensource">installation instructions</a> on the github repository.  After insuring they were all the proper version, the make and install went smoothly.  After finding the executable and pointing it to the default config the admin interface was accessible.</p>
+
+<h1 id="admin-interface"><a name="admin"></a>Admin Interface</h1>
+
+<p>The admin interface is an important tool for people new to graph databases and should ideally provide you not just with a way to manage the graph, but also to query, inspect and load data into it.</p>
+
+<h4 id="fuseki">Fuseki</h4>
+
+<p><img src="http://utecht.github.io//assets/fuseki_admin.png" alt="Fuseki Admin Interface"></p>
+
+<p>The Fuseki admin interface is very responsive and uses AJAX calls for various things.  This can cause nothing to appear if your permissions are not set up properly.  It has basic controls to create new datasets, backup datasets, see how many queries have been run, upload data, and a very fully featured SPARQL query writer.</p>
+
+<h4 id="blazegraph">Blazegraph</h4>
+
+<p><img src="http://utecht.github.io//assets/blaze_admin.png" alt="Blazegraph Admin Interface"></p>
+
+<p>Blazegraph has a very clean and simple admin interface, that uses http sessions to keep information between tabs.  It allows you to create new datasets, load data, run SPARQL queries and explore data.  It also has some performance and status tools, allowing you to view currently running queries no matter where they came from.</p>
+
+<h4 id="sesame">Sesame</h4>
+
+<p><img src="http://utecht.github.io//assets/sesame_admin.png" alt="Sesame Admin Interface"></p>
+
+<p>The sesame admin inferface comes from the workbench WAR file.  It allows you to create various types of graphs, load data, explore data and run queries.</p>
+
+<h4 id="virtuoso">Virtuoso</h4>
+
+<p><img src="http://utecht.github.io//assets/virtuoso_admin.png" alt="Virtuoso Admin Interface"></p>
+
+<p>Compared to all the others the virtuoso admin interface is very confusing, and this is probably because virtuoso is not just a triplestore, but a relational database with a linked data component built in.  It can create graphs, and has tools to query and load them, but it is very heavy and prone to not working.</p>
+
+<h1 id="data-loading"><a name="loading"></a>Data Loading</h1>
+
+<p>The first step after finishing basic set up of the triplestores was to attempt to load something into them and start querying it.  I was looking for a decently sized dataset with data that was not hard to understand to people outside the discipline.  I settled on the <a href="http://datahub.io/dataset/linkedmdb">Linked Movie Database dataset</a> as it fulfilled all these requirements.  It is a set of roughly 600k triples in the N-triples format.</p>
+
+<div class="highlight"><pre><code class="language-n3" data-lang="n3"><span class="nc">&lt;http://data.linkedmdb.org/resource/interlink/36322&gt;</span> <span class="nf">&lt;http://data.linkedmdb.org/resource/oddlinker/linkage_run&gt;</span> <span class="na">&lt;http://data.linkedmdb.org/resource/linkage_run/1&gt;</span> <span class="p">.</span>
+<span class="nc">&lt;http://data.linkedmdb.org/resource/film_cut/30648&gt;</span> <span class="nf">&lt;http://xmlns.com/foaf/0.1/page&gt;</span> <span class="na">&lt;http://www.freebase.com/view/guid/9202a8c04000641f800000000b4dedc5&gt;</span> <span class="p">.</span>
+<span class="nc">&lt;http://data.linkedmdb.org/resource/performance/25260&gt;</span> <span class="nf">&lt;http://data.linkedmdb.org/resource/movie/performance_character&gt;</span> <span class="s">&quot;&quot;</span> <span class="p">.</span>
+<span class="nc">&lt;http://data.linkedmdb.org/resource/performance/160947&gt;</span> <span class="nf">&lt;http://data.linkedmdb.org/resource/movie/performance_actor&gt;</span> <span class="s">&quot;Chris Messina&quot;</span> <span class="p">.</span>
+<span class="nc">&lt;http://data.linkedmdb.org/resource/performance/171014&gt;</span> <span class="nf">&lt;http://data.linkedmdb.org/resource/movie/performance_film&gt;</span> <span class="s">&quot;Saikin-rett\u00C5\u008D&quot;</span> <span class="p">.</span>
+<span class="nc">&lt;http://data.linkedmdb.org/resource/film/22085&gt;</span> <span class="nf">&lt;http://xmlns.com/foaf/0.1/page&gt;</span> <span class="na">&lt;http://www.freebase.com/view/guid/9202a8c04000641f8000000006b56bdb&gt;</span> <span class="p">.</span>
+<span class="nc">&lt;http://data.linkedmdb.org/resource/film/38811&gt;</span> <span class="nf">&lt;http://data.linkedmdb.org/resource/movie/initial_release_date&gt;</span> <span class="s">&quot;1982&quot;</span> <span class="p">.</span>
+<span class="nc">&lt;http://data.linkedmdb.org/resource/film/97822&gt;</span> <span class="nf">&lt;http://data.linkedmdb.org/resource/movie/filmid&gt;</span> <span class="s">&quot;97822&quot;</span><span class="na">^^&lt;http://www.w3.org/2001/XMLSchema#int&gt;</span> <span class="p">.</span>
+<span class="nc">&lt;http://data.linkedmdb.org/resource/film_film_distributor_relationship/7336&gt;</span> <span class="nf">&lt;http://data.linkedmdb.org/resource/movie/film_film_distributor_relationship_distributor&gt;</span> <span class="s">&quot;Metro-Goldwyn-Mayer&quot;</span> <span class="p">.</span>
+<span class="nc">&lt;http://data.linkedmdb.org/resource/film/37528&gt;</span> <span class="nf">&lt;http://xmlns.com/foaf/0.1/page&gt;</span> <span class="na">&lt;http://www.rottentomatoes.com/alias?type=imdbid&amp;s=0164961&gt;</span> <span class="p">.</span></code></pre></div>
+
+<p>With this 800MB file in hand I attempted to load it directly into the various stores with varying degrees of success.</p>
+
+<h4 id="fuseki">Fuseki</h4>
+
+<p>Fuseki allowed for multiple files to be uploaded at once and even gave a progress bar, however it did not load the raw file properly and gave an error message with no additional information.  I assumed there was a format problem inside the file so I went about converting it to another format.  To accomplish this I used python&#39;s RDFLib which can read various RDF file formats and allow you to perform queries against an internal graph that it builds.  It can then also serialize this graph back out into many formats.  However, RDFLib also refused to read the file due to special characters in the URIs.  I set about using sed and a custom python script to correct all the issues and finally loaded the n-triples file into RDFLib and then re-serialized it back out into Turtle format.  I tried uploading the Turtle file into Fuseki and it took about 15min but worked and correctly updated its triple count.</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">rdflib</span> <span class="kn">import</span> <span class="n">Graph</span>
+
+<span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
+
+<span class="n">g</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&quot;m5.nt&quot;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;nt&quot;</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;movies.ttl&quot;</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="n">format</span><span class="o">=</span><span class="s">&quot;turtle&quot;</span><span class="p">))</span></code></pre></div>
+
+<h4 id="blazegraph">Blazegraph</h4>
+
+<p>Blazegraph allows you to upload files directly but limits them to some size over HTTP, however it also allows you to point to a file on the local file system and load from there.  After moving the original file over to the server it spent about 10 minutes loading it and reported back that it now had 600k triples.</p>
+
+<h4 id="sesame">Sesame</h4>
+
+<p>Sesame allows files to be directly uploaded through workbench.  Having had so many problems with the raw file in Fuseki I tried uploading the corrected n-triple file that worked with RDFLib and after roughly 15min it reported back that it was loaded and updated its number of triples.</p>
+
+<h4 id="virtuoso">Virtuoso</h4>
+
+<p>Virtuoso also allows file uploading through the admin interface.  I uploaded the &#39;corrected&#39; n-triples file and it appeared to work.  However it does not give a count of triples loaded anywhere, and the only way to tell was to attempt to query against it, which only worked halfway, but more on that in the next section.</p>
+
+<h1 id="data-exploration"><a name="exploration"></a>Data Exploration</h1>
+
+<p>The ability to run queries from the admin interface and explore the data contained in the store is an important function for these triplestores as it replaces the functionality of browsing schemas in a traditional relational database.</p>
+
+<h4 id="fuseki">Fuseki</h4>
+
+<p><img src="http://utecht.github.io//assets/fuseki_query.png" alt="Fuseki Query Interface"></p>
+
+<p>Fuseki has a very polished query interface, which supports syntax highlighting, syntax checking, common prefix addition and the ability to turn a query into a URL to request it from the REST interface.  However, despite all the positives it has some large drawbacks.  First it lacks any sort of exploration meaning you will need to craft a new query each time you want to explore what your data looks like.  Secondly, it appears to send all data returned from a query back to the client for client-side javascript to handle the pagination, this can cause problems when queries return large datasets back.</p>
+
+<h4 id="blazegraph">Blazegraph</h4>
+
+<p><img src="http://utecht.github.io//assets/blaze_query.png" alt="Blazegraph Query Interface"></p>
+
+<p>Blazegraph also supports syntax highlighting in its query editor, however it lacks syntax checking or the ability to URL-ize the query.  It does pagination of queries on the server-side and handles query running in an HTTP session, meaning you can move off the query tab to explore other sections of the admin interface, such as the excellent status page where you can view information about currently running queries.  Also it keeps a log of recently run queries and the time they took to complete, meaning you can do a small amount of performance testing and run queries again.  Query results are returned such that non-literals link to the data exploration side of the admin interface.</p>
+
+<p><img src="http://utecht.github.io//assets/blaze_explore.png" alt="Blazegraph Exploration Interface"></p>
+
+<p>Once you are in the data exploration side you can see outgoing and incoming links as well as attributes of the current node.  These are all links meaning you can further explore the graph by clicking.  The queries being run to generate this are logged in the status page and can be viewed just like a normal query.</p>
+
+<h4 id="sesame">Sesame</h4>
+
+<p><img src="http://utecht.github.io//assets/sesame_query.png" alt="Sesame Query Interface"></p>
+
+<p>Sesame has a query interface very similar to Fuseki with the same javascript editor, however it does not parse the results with client-side javascript.  Much like blazegraph it returns results as URLs into its own exploration interface.</p>
+
+<p><img src="http://utecht.github.io//assets/sesame_explore.png" alt="Sesame Explore Interface"></p>
+
+<p>Sesame shows the same information as blazegraph it just does not break it out as nicely.  When working with OWL classes though it will display a super/sub-class structure, which can be useful for finding problems.  Sesame has one additional feature over blazegraph, which is an extra button on the query results and exploration allowing you to follow a URL to its original server if you are working with data from an external source.</p>
+
+<h4 id="virtuoso">Virtuoso</h4>
+
+<p><img src="http://utecht.github.io//assets/virtuoso_query.png" alt="Virtuoso Query Interface"></p>
+
+<p>While investigating virtuoso&#39;s query interface I was having trouble finding a query that would run, and this was when I discovered that virtuoso had either not loaded all of the data or discarded a significant amount of it.  The query interface for virtuoso is very basic with no syntax highlighting or any features to explore the data.  I could have mis-configured the graph or uploaded the file incorrectly, but without any good documentation to follow I&#39;m not sure what is the problem here.  Because of this problem I will not consider virtuoso past this point, but may update this at a later date if I can figure out the problem.</p>
+
+<h1 id="rest"><a name="REST"></a>REST</h1>
+
+<p>For my purposes this was the most important feature of these triplestores as it would be the only way the application would interact with the data.  I had need of both the ability to query and update the data in the store from a client-side javascript application.  Unfortunately due to the nature of RDF working directly client to triplestore is difficult.  In traditional RESTful APIs collections of members can be retrieved and then all properties of each member can be retrieved independently.  Because of the graph nature of RDF neither of these works quite the same from a REST point of view.  Take for example a graph storing information about books with this simple structure.</p>
+
+<div class="highlight"><pre><code class="language-turtle" data-lang="turtle"><span class="k">@prefix </span><span class="nv">book: </span><span class="nn">&lt;http://example.com/book/&gt; .</span>
+<span class="k">@prefix </span><span class="nv">author: </span><span class="nn">&lt;http://example.com/author/&gt; .</span>
+
+
+<span class="nc">book:snow_crash</span> <span class="nf">book:name</span> <span class="s">&quot;Snow Crash&quot;</span><span class="p">;</span>
+    <span class="nf">book:published</span> <span class="mi">1992</span><span class="p">;</span>
+    <span class="nf">book:author</span> <span class="na">author:stephenson</span> <span class="p">.</span>
+
+<span class="nc">book:diamond_age</span> <span class="nf">book:name</span> <span class="s">&quot;Diamond Age&quot;</span> <span class="p">;</span>
+    <span class="nf">book:published</span> <span class="mi">1995</span><span class="p">;</span>
+    <span class="nf">book:author</span> <span class="na">author:stephenson</span> <span class="p">.</span>
+
+<span class="nc">author:stephenson</span> <span class="nf">author:fullname</span> <span class="s">&quot;Niel Stephenson&quot;</span> <span class="p">.</span></code></pre></div>
+
+<p>You can picture a simple API for viewing this data with a traditional REST framework.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">/books -&gt; list of all book ids
+/book/:id -&gt; properties of the book identified by :id
+And then a second set of endpoints for authors.
+/authors
+/author/:id
+</code></pre></div>
+<p>This sort of REST API is not possible only using the triplestores I have been investigating.  They all have slightly different REST capabilities, but all share a few major shortcomings.</p>
+
+<h4 id="blazegraph">Blazegraph</h4>
+
+<p>Blazegraph allows you to either use Sesame to serve its REST endpoint or the built in <a href="http://wiki.blazegraph.com/wiki/index.php/NanoSparqlServer#REST_API">NanoSparqlServer</a>, these are the features of the NanoSparqlServer.  This allows for data to be loaded through various formats and the ability to directly execute arbitrary SPARQL queries.  This is a problem because it forces anyone else attempting to use the system to know the layout of our data, and removes any ability to do security as the entire graph is exposed to the internet.</p>
+
+<p>With that in mind if we had the URI for a book and wanted to query the information for it there would be two options.  We could either run a naive query asking for all triples with the book as the subject, or a well defined query to return exactly the information we want.</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">curl localhost:8080/bigdata/namespace/books/sparql <span class="se">\</span>
+--data-urlencode <span class="s2">&quot;query=select * where{&lt;http://example.com/book/diamond_age&gt; ?p ?o}&quot;</span> <span class="se">\</span>
+--data-urlencode <span class="s2">&quot;format=json&quot;</span></code></pre></div>
+
+<p>This naive query produces results that are somewhat difficult to work with, as you need loop through the bindings and keep a list of values that you have found.</p>
+
+<div class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span>
+  <span class="nt">&quot;head&quot;</span> <span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;vars&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="s2">&quot;p&quot;</span><span class="p">,</span> <span class="s2">&quot;o&quot;</span> <span class="p">]</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;results&quot;</span> <span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;bindings&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="p">{</span>
+      <span class="nt">&quot;p&quot;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;uri&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;value&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://example.com/book/author&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;o&quot;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;uri&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;value&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://example.com/author/stephenson&quot;</span>
+      <span class="p">}</span>
+    <span class="p">},</span> <span class="p">{</span>
+      <span class="nt">&quot;p&quot;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;uri&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;value&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://example.com/book/name&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;o&quot;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;literal&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;value&quot;</span> <span class="p">:</span> <span class="s2">&quot;Diamond Age&quot;</span>
+      <span class="p">}</span>
+    <span class="p">},</span> <span class="p">{</span>
+      <span class="nt">&quot;p&quot;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;uri&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;value&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://example.com/book/published&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;o&quot;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;datatype&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://www.w3.org/2001/XMLSchema#integer&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;literal&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;value&quot;</span> <span class="p">:</span> <span class="s2">&quot;1995&quot;</span>
+      <span class="p">}</span>
+    <span class="p">}</span> <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></div>
+
+<p>With knowledge of the data you can produce a much more refined SPARQL query to pull just the information that you want.</p>
+
+<div class="highlight"><pre><code class="language-sparql" data-lang="sparql"><span class="k">PREFIX</span><span class="w"> </span><span class="nn">book</span><span class="p">:</span><span class="nl">&lt;http://example.com/book/&gt;</span><span class="w"></span>
+<span class="k">PREFIX</span><span class="w"> </span><span class="nn">author</span><span class="p">:</span><span class="nl">&lt;http://example.com/author/&gt;</span><span class="w"></span>
+
+<span class="k">select</span><span class="w"> </span><span class="nv">?name</span><span class="w"> </span><span class="nv">?published</span><span class="w"> </span><span class="nv">?author_name</span><span class="w"> </span><span class="k">where</span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nn">book</span><span class="p">:</span><span class="nt">diamond_age</span><span class="w"> </span><span class="nn">book</span><span class="p">:</span><span class="nt">name</span><span class="w"> </span><span class="nv">?name</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+<span class="w">  </span><span class="nn">book</span><span class="p">:</span><span class="nt">diamond_age</span><span class="w"> </span><span class="nn">book</span><span class="p">:</span><span class="nt">published</span><span class="w"> </span><span class="nv">?published</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+<span class="w">  </span><span class="nn">book</span><span class="p">:</span><span class="nt">diamond_age</span><span class="w"> </span><span class="nn">book</span><span class="p">:</span><span class="nt">author</span><span class="w"> </span><span class="nv">?author</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+<span class="w">  </span><span class="nv">?author</span><span class="w"> </span><span class="k">a</span><span class="nn">uthor</span><span class="p">:</span><span class="nt">fullname</span><span class="w"> </span><span class="nv">?author_name</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></code></pre></div>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">curl localhost:8080/bigdata/namespace/books/sparql <span class="se">\</span>
+--data-urlencode <span class="s2">&quot;query=PREFIX book:&lt;http://example.com/book/&gt; PREFIX author:&lt;http://example.com/author/&gt; select ?name ?published ?author_name where{ book:diamond_age book:name ?name . book:diamond_age book:published ?published . book:diamond_age book:author ?author . ?author author:fullname ?author_name .}&quot;</span> <span class="se">\</span>
+--data-urlencode <span class="s2">&quot;format=json&quot;</span></code></pre></div>
+
+<div class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span>
+  <span class="nt">&quot;head&quot;</span> <span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;vars&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;published&quot;</span><span class="p">,</span> <span class="s2">&quot;author_name&quot;</span> <span class="p">]</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;results&quot;</span> <span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;bindings&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="p">{</span>
+      <span class="nt">&quot;author_name&quot;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;literal&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;value&quot;</span> <span class="p">:</span> <span class="s2">&quot;Niel Stephenson&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;name&quot;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;literal&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;value&quot;</span> <span class="p">:</span> <span class="s2">&quot;Diamond Age&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;published&quot;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;datatype&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://www.w3.org/2001/XMLSchema#integer&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;literal&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;value&quot;</span> <span class="p">:</span> <span class="s2">&quot;1995&quot;</span>
+      <span class="p">}</span>
+    <span class="p">}</span> <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></div>
+
+<p>However, this approach requires embedding large SPARQL queries in your client-side applications or require anyone using your data to have knowledge of SPARQL and your data layout.  This is not ideal.</p>
+
+<h4 id="fuseki">Fuseki</h4>
+
+<p>Fuseki implements the same <a href="http://jena.apache.org/documentation/fuseki2/soh.html#service-endpoints">SPARQL endpoints</a> as Blazegraph and returns things in the same format.</p>
+
+<h4 id="sesame">Sesame</h4>
+
+<p>In addition to support for HTTP SPARQL queries like Blazegraph and Fuseki sesame has support for asking for individual subjects, predicates or objects using the following syntax.</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">curl -G localhost:8080/openrdf-sesame/repositories/books/statements <span class="se">\</span>
+--data-urlencode <span class="s2">&quot;subj=&lt;http://example.com/book/diamond_age&gt;&quot;</span> <span class="se">\</span>
+-H <span class="s2">&quot;Accept: application/rdf+json&quot;</span></code></pre></div>
+
+<p>Results in the following json block are somewhat like the naive query seen above as it is returning full URIs and would require additional queries to find all the information that we want to display the basic information of this book.</p>
+
+<div class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span>
+  <span class="nt">&quot;http://example.com/book/diamond_age&quot;</span> <span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;http://example.com/book/author&quot;</span> <span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;value&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://example.com/author/stephenson&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;uri&quot;</span>
+      <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;http://example.com/book/name&quot;</span> <span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;value&quot;</span> <span class="p">:</span> <span class="s2">&quot;Diamond Age&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;literal&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;datatype&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://www.w3.org/2001/XMLSchema#string&quot;</span>
+      <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;http://example.com/book/published&quot;</span> <span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;value&quot;</span> <span class="p">:</span> <span class="s2">&quot;1995&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;literal&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;datatype&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://www.w3.org/2001/XMLSchema#integer&quot;</span>
+      <span class="p">}</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></div>
+
+<h1 id="rdf-feature-support"><a name="features"></a>RDF Feature Support</h1>
+
+<p>When I speak of RDF features I mean any possible inference or reasoning that the triplestore can do based on any ontologies that have been loaded into the store.  Inferences and reasoning are similar but quite distinct things.  Inference generally refers RDF level types and classes being represented in the stored triples, while reasoning is applying an OWL reasoner to support more advanced constructs such as owl:sameAs.</p>
+
+<h4 id="fuseki">Fuseki</h4>
+
+<p>The Jena engine has the largest coverage of both reasoning engines and inference models.  Both reasoning and inference are performed with query modification or virtual triples.  This results in slower queries with heavy reasoning or inference, but allows great flexibility.</p>
+
+<h4 id="blazegraph-and-sesame">Blazegraph and Sesame</h4>
+
+<p>Blazegraph and Sesame both only support RDF level materialized inference.  This results in very fast processsing of queries with slightly slower loading speeds, and a certain intractability to the RDF class structure of the data.</p>
+
+<h1 id="performance"><a name="performance"></a>Performance</h1>
+
+<p>Performance testing was done using the <a href="http://swat.cse.lehigh.edu/projects/lubm/">Lehigh University Benchmark</a>.  This is a generated dataset and a set of <a href="http://swat.cse.lehigh.edu/projects/lubm/queries-sparql.txt">14 SPARQL queries</a> that test the performance and reasoning/inference capabilities of a triple store.  </p>
+
+<table><thead>
+<tr>
+<th>Query</th>
+<th>Fuseki</th>
+<th>Blazegraph</th>
+<th>Sesame</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>1</td>
+<td>0.79</td>
+<td>0.08</td>
+<td>0.08</td>
+</tr>
+<tr>
+<td>2</td>
+<td>208.62</td>
+<td>0.05</td>
+<td>0.01</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0.07</td>
+<td>0.01</td>
+<td>0.01</td>
+</tr>
+<tr>
+<td>4</td>
+<td>15.47</td>
+<td>0.02</td>
+<td>0.06</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0.24</td>
+<td>0.06</td>
+<td>0.03</td>
+</tr>
+<tr>
+<td>6</td>
+<td>0.22</td>
+<td>0.21</td>
+<td>0.08</td>
+</tr>
+<tr>
+<td>7</td>
+<td>59.68</td>
+<td>0.02</td>
+<td>0.30</td>
+</tr>
+<tr>
+<td>8</td>
+<td>2.84</td>
+<td>0.30</td>
+<td>1.16</td>
+</tr>
+<tr>
+<td>9</td>
+<td>17.46</td>
+<td>0.05</td>
+<td>0.05</td>
+</tr>
+<tr>
+<td>10</td>
+<td>0.06</td>
+<td>0.03</td>
+<td>0.01</td>
+</tr>
+<tr>
+<td>11</td>
+<td>0.03</td>
+<td>0.02</td>
+<td>0.01</td>
+</tr>
+<tr>
+<td>12</td>
+<td>0.01</td>
+<td>0.02</td>
+<td>0.00</td>
+</tr>
+<tr>
+<td>13</td>
+<td>0.19</td>
+<td>0.02</td>
+<td>0.00</td>
+</tr>
+<tr>
+<td>14</td>
+<td>0.07</td>
+<td>0.05</td>
+<td>0.05</td>
+</tr>
+</tbody></table>
+
+<h4 id="fuseki">Fuseki</h4>
+
+<p>Multiple results are listed here for different levels of reasoning and inference with Jena.</p>
+
+<p>OWL MEM MICRO_RULE_INF</p>
+
+<p>This is described as an optimised rule-based reasoner with OWL full rules.  It has the slowest performance of any rule set or environment, however it is the only thing that returns the correct results for all queries.</p>
+
+<p>Time - 306.289955139</p>
+
+<p>Total Results - 25671</p>
+
+<table><thead>
+<tr>
+<th>Query#</th>
+<th>Runtime</th>
+<th>Results</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>1</td>
+<td>0.790</td>
+<td>4</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>208.6</strong></td>
+<td>0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0.073</td>
+<td>6</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>15.47</strong></td>
+<td>34</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0.243</td>
+<td>719</td>
+</tr>
+<tr>
+<td>6</td>
+<td>0.224</td>
+<td>7790</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>59.68</strong></td>
+<td>67</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>2.840</strong></td>
+<td>7790</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>17.46</strong></td>
+<td>3101</td>
+</tr>
+<tr>
+<td>10</td>
+<td>0.067</td>
+<td>4</td>
+</tr>
+<tr>
+<td>11</td>
+<td>0.338</td>
+<td>224</td>
+</tr>
+<tr>
+<td>12</td>
+<td>0.016</td>
+<td>15</td>
+</tr>
+<tr>
+<td>13</td>
+<td>0.191</td>
+<td>1</td>
+</tr>
+<tr>
+<td>14</td>
+<td>0.075</td>
+<td>5916</td>
+</tr>
+</tbody></table>
+
+<p>RDFS_MEM_RDFS_INF</p>
+
+<p>RDFS inference mode is performing the same level of inference as the other two triple stores, however this is performed in memory as opposed to materializing the triples at the time of data load resulting in much worse performance.</p>
+
+<p>Time - 249.190382004</p>
+
+<p>Total Results - 19797</p>
+
+<table><thead>
+<tr>
+<th>Query#</th>
+<th>Runtime</th>
+<th>Results</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>1</td>
+<td>0.282</td>
+<td>4</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>191.8</strong></td>
+<td>0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0.089</td>
+<td>6</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0.044</td>
+<td>34</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0.385</td>
+<td>719</td>
+</tr>
+<tr>
+<td>6</td>
+<td>0.218</td>
+<td>5916</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>42.85</strong></td>
+<td>59</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>1.961</strong></td>
+<td>5916</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>11.19</strong></td>
+<td>1227</td>
+</tr>
+<tr>
+<td>10</td>
+<td>0.046</td>
+<td>0</td>
+</tr>
+<tr>
+<td>11</td>
+<td>0.011</td>
+<td>0</td>
+</tr>
+<tr>
+<td>12</td>
+<td>0.008</td>
+<td>0</td>
+</tr>
+<tr>
+<td>13</td>
+<td>0.038</td>
+<td>0</td>
+</tr>
+<tr>
+<td>14</td>
+<td>0.081</td>
+<td>5916</td>
+</tr>
+</tbody></table>
+
+<p>RDFS_MEM</p>
+
+<p>Here no reasoning is used which get much closer to testing the raw performance of the triple store.</p>
+
+<p>Time - 56.2234978676</p>
+
+<p>Total Results - 5926</p>
+
+<table><thead>
+<tr>
+<th>Query#</th>
+<th>Runtime</th>
+<th>Results</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>1</td>
+<td>0.187</td>
+<td>4</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>55.64</strong></td>
+<td>0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0.034</td>
+<td>6</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0.011</td>
+<td>0</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0.013</td>
+<td>0</td>
+</tr>
+<tr>
+<td>6</td>
+<td>0.009</td>
+<td>0</td>
+</tr>
+<tr>
+<td>7</td>
+<td>0.009</td>
+<td>0</td>
+</tr>
+<tr>
+<td>8</td>
+<td>0.010</td>
+<td>0</td>
+</tr>
+<tr>
+<td>9</td>
+<td>0.010</td>
+<td>0</td>
+</tr>
+<tr>
+<td>10</td>
+<td>0.009</td>
+<td>0</td>
+</tr>
+<tr>
+<td>11</td>
+<td>0.011</td>
+<td>0</td>
+</tr>
+<tr>
+<td>12</td>
+<td>0.010</td>
+<td>0</td>
+</tr>
+<tr>
+<td>13</td>
+<td>0.009</td>
+<td>0</td>
+</tr>
+<tr>
+<td>14</td>
+<td>0.221</td>
+<td>5916</td>
+</tr>
+</tbody></table>
+
+<h4 id="blazegraph">Blazegraph</h4>
+
+<p>Blazegraph was run in triple mode with inference turned on for this graph.  Blazegraph had the best performance and returned more correct results than sesame which was running in the same inference mode.</p>
+
+<p>Time - 1.15243792534</p>
+
+<p>Total Results - 20022</p>
+
+<table><thead>
+<tr>
+<th>Query#</th>
+<th>Runtime</th>
+<th>Results</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>1</td>
+<td>0.086</td>
+<td>4</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0.056</td>
+<td>0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0.016</td>
+<td>6</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0.029</td>
+<td>34</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0.060</td>
+<td>719</td>
+</tr>
+<tr>
+<td>6</td>
+<td>0.211</td>
+<td>5916</td>
+</tr>
+<tr>
+<td>7</td>
+<td>0.025</td>
+<td>59</td>
+</tr>
+<tr>
+<td>8</td>
+<td>0.305</td>
+<td>5916</td>
+</tr>
+<tr>
+<td>9</td>
+<td>0.053</td>
+<td>1227</td>
+</tr>
+<tr>
+<td>10</td>
+<td>0.036</td>
+<td>0</td>
+</tr>
+<tr>
+<td>11</td>
+<td>0.024</td>
+<td>224</td>
+</tr>
+<tr>
+<td>12</td>
+<td>0.026</td>
+<td>0</td>
+</tr>
+<tr>
+<td>13</td>
+<td>0.025</td>
+<td>1</td>
+</tr>
+<tr>
+<td>14</td>
+<td>0.050</td>
+<td>5916</td>
+</tr>
+</tbody></table>
+
+<h4 id="sesame">Sesame</h4>
+
+<p>Sesame had a problem returning duplicate results, which can be seen here with the greatly inflated number of results returned. </p>
+
+<p>Time - 3.34652090073</p>
+
+<p>Total Results - 117311</p>
+
+<table><thead>
+<tr>
+<th>Query#</th>
+<th>Runtime</th>
+<th>Results</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>1</td>
+<td>0.088</td>
+<td>16</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0.012</td>
+<td>0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0.011</td>
+<td>24</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0.065</td>
+<td>544</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0.039</td>
+<td>1397</td>
+</tr>
+<tr>
+<td>6</td>
+<td>0.083</td>
+<td>5916</td>
+</tr>
+<tr>
+<td>7</td>
+<td>0.017</td>
+<td>472</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>1.160</strong></td>
+<td>94656</td>
+</tr>
+<tr>
+<td>9</td>
+<td>0.054</td>
+<td>2454</td>
+</tr>
+<tr>
+<td>10</td>
+<td>0.010</td>
+<td>0</td>
+</tr>
+<tr>
+<td>11</td>
+<td>0.008</td>
+<td>0</td>
+</tr>
+<tr>
+<td>12</td>
+<td>0.009</td>
+<td>0</td>
+</tr>
+<tr>
+<td>13</td>
+<td>0.008</td>
+<td>0</td>
+</tr>
+<tr>
+<td>14</td>
+<td>0.054</td>
+<td>11832</td>
+</tr>
+</tbody></table>
+
+<p>Adding DISTINCT to the query brough the numbers much closer to the other triple stores, however it will stll missing data on query 11 and query 13, when compared to inference mode in Jena and Blazegraph.</p>
+
+<p>Time - 1.57800793648</p>
+
+<p>Total Results - 19797</p>
+
+<table><thead>
+<tr>
+<th>Query#</th>
+<th>Runtime</th>
+<th>Results</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>1</td>
+<td>0.033</td>
+<td>4</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0.012</td>
+<td>0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0.009</td>
+<td>6</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0.017</td>
+<td>34</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0.025</td>
+<td>719</td>
+</tr>
+<tr>
+<td>6</td>
+<td>0.071</td>
+<td>5916</td>
+</tr>
+<tr>
+<td>7</td>
+<td>0.016</td>
+<td>59</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>1.060</strong></td>
+<td>5916</td>
+</tr>
+<tr>
+<td>9</td>
+<td>0.083</td>
+<td>1227</td>
+</tr>
+<tr>
+<td>10</td>
+<td>0.008</td>
+<td>0</td>
+</tr>
+<tr>
+<td>11</td>
+<td>0.007</td>
+<td>0</td>
+</tr>
+<tr>
+<td>12</td>
+<td>0.007</td>
+<td>0</td>
+</tr>
+<tr>
+<td>13</td>
+<td>0.007</td>
+<td>0</td>
+</tr>
+<tr>
+<td>14</td>
+<td>0.069</td>
+<td>5916</td>
+</tr>
+</tbody></table>
+
+<h1 id="production-readiness"><a name="prod"></a>Production Readiness</h1>
+
+<p>For a system to be used in production some form of security and a system to backup data are very important.  Security can be handled at two levels either system wide through another process or at a graph level by the triple store itself, either of these could be useful depending on needs.  In the same way backups could either be handled by the triple store itself or through an external process that copies files.</p>
+
+<h4 id="fuseki">Fuseki</h4>
+
+<p>Fuseki can create graph backups directly from the admin interface, these are created as gzipped n3 files of the entire graph stored on the server.  To restore them either a new graph can be created and that file can be directly loaded or the current graph can be purged and then reloaded from the file.</p>
+
+<p>Fuseki uses <a href="http://shiro.apache.org/">Apache Shiro</a> for security and this allows various user authentication methods, and allows graph level security.</p>
+
+<h4 id="blazegraph">Blazegraph</h4>
+
+<p>The Blazegraph admin interface allows for datasets to be cloned, but this button does not appear to function, at least any way that I could find.  Ontop of that I could not find any files that could be backed up manually.</p>
+
+<p>Blazegraph has no method for graph level security and thus relies on the Java application server to provide security.</p>
+
+<h4 id="sesame">Sesame</h4>
+
+<p>The Sesame workbench alows for a graph to be exported through various formats, however this is very slow and comes over uncompressed, which results in far larger files to be generated and transfered.  Sesame has no support for graph level security and also relies on the application server.</p>
+
+        <p class="top"><small><a href="#top">[top]</a></small></p>
+    </article>
+
+
+    <div class="social module">
+        <ul>
+
+            
+
+            
+
+            
+            
+
+            <li class="fb">
+            <a target="_blank" title="Share on Facebook" href="https://www.facebook.com/sharer/sharer.php?t=Comparing Triplestores&u=http://utecht.github.io//comparing-triplestores">Facebook</a></li>
+            <li class="tw"><a target="_blank" title="Share on Twitter" href="https://twitter.com/intent/tweet?text=Comparing Triplestores&url=http://utecht.github.io//comparing-triplestores&via=thenmal&hashtags=">Twitter</a></li>
+            <li class="gp"><a target="_blank" title="Share on Google+" href="https://plus.google.com/share?url=http://utecht.github.io//comparing-triplestores">Google+</a></li>
+        </ul>
+    </div>
+
+
+
+</div>
+
+
+
+
+
+    <div class="footer module">
+    <span class="licence">Copyright 2015 &copy; Minimal-block.</span>
+    <p>
+        Powered by <a href="http://jekyllrb.com/" target="_blank">Jekyllrb</a>.
+        The <a href="https://github.com/drvy/minimal-block" target="_blank">minimal-block theme.</a>
+    </p>
+</div>
+
+</body>
+</html>
