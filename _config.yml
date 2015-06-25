@@ -1,13 +1,20 @@
-# Site settings
-title: Utecht Blog 
-email: joseph.utecht@gmail.com
-description: > # this means to ignore newlines until "baseurl:"
-  Some musings about coding.
-  Currently exploring graph datastores.
-baseurl: "" # the subpath of your site, e.g. /blog/
-url: "http://utecht.github.io" # the base hostname & protocol for your site
-twitter_username: thenmal
-github_username:  utecht
+# General
+name: Utecht Blog
+description: "Random thoughts and slightly collected notes about things I do."
+url: http://localhost:4000
 
-# Build settings
-markdown: kramdown
+markdown: redcarpet
+redcarpet:
+    extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "strikethrough", "superscript", "with_toc_data", "tables"]
+highlighter: pygments
+
+paginate: 5
+permalink: /:title
+
+# Social share and comments.
+twitter: thenmal
+github: utecht
+
+# RSS feed
+rss-feed-limit: 10
+rss-show-full: "no"

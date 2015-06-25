@@ -1,15 +1,14 @@
 ---
 layout: post
 title: Comparing Triplestores
-permalink: triplestores
-tags: rdf triplestores
+categories: [rdf, triplestores]
 ---
-
-In looking into the world of triplestores there exists very little in the way of traditional web communities discussing and comparing them.  Most of the discussion appears to happen in academic journals, which would make sense as their widest use is in academia.  The concepts of the [semantic web](http://en.wikipedia.org/wiki/Semantic_Web) and graph databases have great uses outside of academia and hopefully I can show that.  A good starting place is comparing some of the available triplestores with the goal of producing a modern web application that would ideally have a mostly javascript client-side that is querying and updating a triplestore on the backend.
+In looking into the world of triplestores there exists very little in the way of traditional web communities discussing and comparing them.  Most of the discussion appears to happen in academic journals, which would make sense as their widest use is in academia.  A good starting place is comparing some of the available triplestores with the goal of producing a modern web application that would ideally have a mostly javascript client-side that is querying and updating a triplestore on the backend.
 
 I picked a small sample of open source, actively maintained and easy to install stores to run through a series of tests.
 
 | Name | License | Deployment | Language |
+| ---- | ------- | ---------- | -------- |
 | [Apache Fuseki](http://jena.apache.org/index.html) | [Apache License 2](http://www.apache.org/licenses/LICENSE-2.0) | Standalone or WAR | Java |
 | [Blazegraph](http://www.blazegraph.com/blazegraph) | GPLv2 or commercial | Standalone or WAR | Java |
 | [Sesame](http://rdf4j.org/) | BSD | WAR | Java |
@@ -33,13 +32,16 @@ I wanted a similar environment for all of the testing, so I chose to deploy each
 #### Fuseki
 Fuseki is a web front-end provided for the Apache Jena RDF tools, I downloaded the [Fuseki2 tar](http://jena.apache.org/download/index.cgi) and followed the rather terse [installation instructions](http://jena.apache.org/documentation/fuseki2/fuseki-run.html#fuseki-as-a-web-application).
 
-> Fuseki as a Web Application
+    Fuseki as a Web Application
 
-> Fuseki can run from a WAR file.
+    Fuseki can run from a WAR file.
 
-> FUSEKI_HOME is not applicable.
+    FUSEKI_HOME is not applicable.
 
-> FUSEKI_BASE defaults to /etc/fuseki which must be a writeable directory. It is initialised the first time Fuseki runs, including a Apache Shiro security file but this is only intended as a starting point. It restricts use of the admin UI to the local machine.
+    FUSEKI_BASE defaults to /etc/fuseki which must be a writeable directory.
+    It is initialised the first time Fuseki runs, including a Apache Shiro security
+    file but this is only intended as a starting point.
+    It restricts use of the admin UI to the local machine.
 
 Dropping the WAR into Tomcat's folder and creating a /etc/fuseki folder with Tomcat as the owner appeared to do the trick, except that the admin interface was missing some elements.  It took some investigation through firefox's inspect element to see that it was attempting to load additional resources and was getting a 403 Forbidden from the server.  Investigating inside the /etc/fuseki folder there was a shiro.ini file with basic permissions set.  I've never messed with Apache Shiro security, but my assumption was that by port forwarding into the VM the server didn't see the request as coming from localhost and was denying access.  As a simple fix I allowed all access by uncommenting the line to allow all access.  This solved the problem and I had full access to the admin interface.
 
@@ -61,18 +63,22 @@ The admin interface is an important tool for people new to graph databases and s
 
 #### Fuseki
 ![Fuseki Admin Interface]({{ site.url }}/assets/fuseki_admin.png)
+
 The Fuseki admin interface is very responsive and uses AJAX calls for various things.  This can cause nothing to appear if your permissions are not set up properly.  It has basic controls to create new datasets, backup datasets, see how many queries have been run, upload data, and a very fully featured SPARQL query writer.
 
 #### Blazegraph
 ![Blazegraph Admin Interface]({{ site.url }}/assets/blaze_admin.png)
+
 Blazegraph has a very clean and simple admin interface, that uses http sessions to keep information between tabs.  It allows you to create new datasets, load data, run SPARQL queries and explore data.  It also has some performance and status tools, allowing you to view currently running queries no matter where they came from.
 
 #### Sesame
 ![Sesame Admin Interface]({{ site.url }}/assets/sesame_admin.png)
+
 The sesame admin inferface comes from the workbench WAR file.  It allows you to create various types of graphs, load data, explore data and run queries.
 
 #### Virtuoso
 ![Virtuoso Admin Interface]({{ site.url }}/assets/virtuoso_admin.png)
+
 Compared to all the others the virtuoso admin interface is very confusing, and this is probably because virtuoso is not just a triplestore, but a relational database with a linked data component built in.  It can create graphs, and has tools to query and load them, but it is very heavy and prone to not working.
 
 <a name="loading"></a>Data Loading
@@ -124,22 +130,30 @@ The ability to run queries from the admin interface and explore the data contain
 
 #### Fuseki
 ![Fuseki Query Interface]({{ site.url }}/assets/fuseki_query.png)
+
 Fuseki has a very polished query interface, which supports syntax highlighting, syntax checking, common prefix addition and the ability to turn a query into a URL to request it from the REST interface.  However, despite all the positives it has some large drawbacks.  First it lacks any sort of exploration meaning you will need to craft a new query each time you want to explore what your data looks like.  Secondly, it appears to send all data returned from a query back to the client for client-side javascript to handle the pagination, this can cause problems when queries return large datasets back.
 
 #### Blazegraph
 ![Blazegraph Query Interface]({{ site.url }}/assets/blaze_query.png)
+
 Blazegraph also supports syntax highlighting in its query editor, however it lacks syntax checking or the ability to URL-ize the query.  It does pagination of queries on the server-side and handles query running in an HTTP session, meaning you can move off the query tab to explore other sections of the admin interface, such as the excellent status page where you can view information about currently running queries.  Also it keeps a log of recently run queries and the time they took to complete, meaning you can do a small amount of performance testing and run queries again.  Query results are returned such that non-literals link to the data exploration side of the admin interface.
+
 ![Blazegraph Exploration Interface]({{ site.url }}/assets/blaze_explore.png)
+
 Once you are in the data exploration side you can see outgoing and incoming links as well as attributes of the current node.  These are all links meaning you can further explore the graph by clicking.  The queries being run to generate this are logged in the status page and can be viewed just like a normal query.
 
 #### Sesame
 ![Sesame Query Interface]({{ site.url }}/assets/sesame_query.png)
+
 Sesame has a query interface very similar to Fuseki with the same javascript editor, however it does not parse the results with client-side javascript.  Much like blazegraph it returns results as URLs into its own exploration interface.
+
 ![Sesame Explore Interface]({{ site.url }}/assets/sesame_explore.png)
+
 Sesame shows the same information as blazegraph it just does not break it out as nicely.  When working with OWL classes though it will display a super/sub-class structure, which can be useful for finding problems.  Sesame has one additional feature over blazegraph, which is an extra button on the query results and exploration allowing you to follow a URL to its original server if you are working with data from an external source.
 
 #### Virtuoso
 ![Virtuoso Query Interface]({{ site.url }}/assets/virtuoso_query.png)
+
 While investigating virtuoso's query interface I was having trouble finding a query that would run, and this was when I discovered that virtuoso had either not loaded all of the data or discarded a significant amount of it.  The query interface for virtuoso is very basic with no syntax highlighting or any features to explore the data.  I could have mis-configured the graph or uploaded the file incorrectly, but without any good documentation to follow I'm not sure what is the problem here.  Because of this problem I will not consider virtuoso past this point, but may update this at a later date if I can figure out the problem.
 
 <a name="REST"></a>REST
@@ -165,13 +179,11 @@ author:stephenson author:fullname "Niel Stephenson" .
 
 You can picture a simple API for viewing this data with a traditional REST framework.
 
-{% highlight html %}
-/books -> list of all book ids
-/book/:id -> properties of the book identified by :id
-And then a second set of endpoints for authors.
-/authors
-/author/:id
-{% endhighlight %}
+    /books -> list of all book ids
+    /book/:id -> properties of the book identified by :id
+    And then a second set of endpoints for authors.
+    /authors
+    /author/:id
 
 This sort of REST API is not possible only using the triplestores I have been investigating.  They all have slightly different REST capabilities, but all share a few major shortcomings.
 
@@ -326,6 +338,7 @@ Blazegraph and Sesame both only support RDF level materialized inference.  This 
 Performance testing was done using the [Lehigh University Benchmark](http://swat.cse.lehigh.edu/projects/lubm/).  This is a generated dataset and a set of [14 SPARQL queries](http://swat.cse.lehigh.edu/projects/lubm/queries-sparql.txt) that test the performance and reasoning/inference capabilities of a triple store.  
 
 | Query | Fuseki | Blazegraph | Sesame |
+| ----- | ------ | ---------- | ------ |
 | 1 | 0.79 | 0.08 | 0.08 |
 | 2 | 208.62 | 0.05 | 0.01 |
 | 3 | 0.07 | 0.01 | 0.01 |
@@ -354,6 +367,7 @@ Time - 306.289955139
 Total Results - 25671
 
 | Query# | Runtime | Results |
+| ------ | ------- | ------- |
 | 1 | 0.790 | 4 |
 | 2 | **208.6** | 0 |
 | 3 | 0.073 | 6 |
@@ -378,6 +392,7 @@ Time - 249.190382004
 Total Results - 19797
 
 | Query# | Runtime | Results |
+| ------ | ------- | ------- |
 | 1 | 0.282 | 4 |
 | 2 | **191.8** | 0 |
 | 3 | 0.089 | 6 |
@@ -402,6 +417,7 @@ Time - 56.2234978676
 Total Results - 5926
 
 | Query# | Runtime | Results |
+| ------ | ------- | ------- |
 | 1 | 0.187 | 4 |
 | 2 | **55.64** | 0 |
 | 3 | 0.034 | 6 |
@@ -427,6 +443,7 @@ Time - 1.15243792534
 Total Results - 20022
 
 | Query# | Runtime | Results |
+| ------ | ------- | ------- |
 | 1 | 0.086 | 4 |
 | 2 | 0.056 | 0 |
 | 3 | 0.016 | 6 |
@@ -451,6 +468,7 @@ Time - 3.34652090073
 Total Results - 117311
 
 | Query# | Runtime | Results |
+| ------ | ------- | ------- |
 | 1 | 0.088 | 16 |
 | 2 | 0.012 | 0 |
 | 3 | 0.011 | 24 |
@@ -474,6 +492,7 @@ Time - 1.57800793648
 Total Results - 19797
 
 | Query# | Runtime | Results |
+| ------ | ------- | ------- |
 | 1 | 0.033 | 4 |
 | 2 | 0.012 | 0 |
 | 3 | 0.009 | 6 |
@@ -491,10 +510,18 @@ Total Results - 19797
 
 <a name="prod"></a>Production Readiness
 ===
+For a system to be used in production some form of security and a system to backup data are very important.  Security can be handled at two levels either system wide through another process or at a graph level by the triple store itself, either of these could be useful depending on needs.  In the same way backups could either be handled by the triple store itself or through an external process that copies files.
 
 #### Fuseki
+Fuseki can create graph backups directly from the admin interface, these are created as gzipped n3 files of the entire graph stored on the server.  To restore them either a new graph can be created and that file can be directly loaded or the current graph can be purged and then reloaded from the file.
+
+Fuseki uses [Apache Shiro](http://shiro.apache.org/) for security and this allows various user authentication methods, and allows graph level security.
 
 #### Blazegraph
+The Blazegraph admin interface allows for datasets to be cloned, but this button does not appear to function, at least any way that I could find.  Ontop of that I could not find any files that could be backed up manually.
+
+Blazegraph has no method for graph level security and thus relies on the Java application server to provide security.
 
 #### Sesame
+The Sesame workbench alows for a graph to be exported through various formats, however this is very slow and comes over uncompressed, which results in far larger files to be generated and transfered.  Sesame has no support for graph level security and also relies on the application server.
 
