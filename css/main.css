@@ -13,10 +13,10 @@
 -  Main background colors. -
 -------------------------------------------------------------------------*/
 
-.color-1 { background: #8E44AD; } /* Title background */
-.color-2 { background: #9B59B6; } /* Description background */
+.color-1 { background: #f2f2f2; } /* Title background */
+.color-2 { background: #f2f2f2; } /* Description background */
 .color-3 { background: #f2f2f2; } /* Modules background */
-.color-4 { background: #9B59B6; } /* Main menu background */
+.color-4 { background: #f2f2f2; } /* Main menu background */
 
 
 /* ------------------------------------------------------------------------
@@ -70,7 +70,7 @@ nav {
 
     nav a:hover {
         border: 0;
-        color: #f2f2f2 !important;
+        color: #2c3e50 !important;
         text-decoration: underline;
     }
 
@@ -82,8 +82,7 @@ article p a {
 }
 
     article p a:hover, article p a:active {
-        color: #f2f2f2 !important;
-        background: #8E44AD;
+        color: #2c3e50 !important;
         border: 0;
     }
 
@@ -105,14 +104,14 @@ article p a {
     }
 
     .main-header a {
-        color: #f5f5f5;
+        color: #000000;
         text-transform: uppercase;
     }
 
-    .main-header a:hover, .main-header a:focus { color: #e1e1e1; }
+    .main-header a:hover, .main-header a:focus { color: #2c3e50; }
 
 
-.main-header .description { color: #e5e5e5; }
+.main-header .description { color: #000000; }
 .main-header .main-menu { padding: 0.1em; }
 
 /* ------------------------------------------------------------------------
@@ -125,8 +124,8 @@ article p a {
     width: 65%;
 }
 
-    .main-content a { color: #8E44AD; }
-    .main-content a:hover, .main-content a:focus { color: #9B59B6; }
+    .main-content a { color: #000000; }
+    .main-content a:hover, .main-content a:focus { color: #2c3e50; }
 
 
 .category {
@@ -240,7 +239,7 @@ table {
     }
     table thead tr { background: #f2f2f2 !important; }
     table tr:nth-child(odd) { background: #f2f2f2; }
-    table tr:nth-child(even)  { background: #e1e1e1; }
+    table tr:nth-child(even)  { background: #bdc3c7; }
 
 
 /* ------------------------------------------------------------------------
@@ -265,7 +264,7 @@ table {
     }
 
     .social li a {
-        color: #f5f5f5;
+        color: #F2F2F2;
         display: block;
         margin: 0;
         padding: 0;
@@ -273,7 +272,7 @@ table {
     }
 
     .social li a:hover, .social li a:active {
-        color: #f5f5f5;
+        color: #F5F5F5;
         text-decoration: underline;
     }
 
