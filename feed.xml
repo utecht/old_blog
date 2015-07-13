@@ -3,8 +3,8 @@
     <channel>
         <title>Utecht Blog</title>
         <description>Random thoughts and slightly collected notes about things I do.</description>
-        <link>http://localhost:4000</link>
-        <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
+        <link>http://utecht.github.io</link>
+        <atom:link href="http://utecht.github.io/feed.xml" rel="self" type="application/rss+xml" />
         
             <item>
                 <title>Paper Draft</title>
@@ -13,8 +13,8 @@
                     <description></description>
                 
                             <pubDate>Mon, 13 Jul 2015 00:00:00 -0500</pubDate>
-                <link>http://localhost:4000/paper-draft</link>
-                <guid isPermaLink="true">http://localhost:4000/paper-draft</guid>
+                <link>http://utecht.github.io/paper-draft</link>
+                <guid isPermaLink="true">http://utecht.github.io/paper-draft</guid>
             </item>
         
             <item>
@@ -25,8 +25,8 @@
 </description>
                 
                             <pubDate>Fri, 26 Jun 2015 00:00:00 -0500</pubDate>
-                <link>http://localhost:4000/modern-javascript-rdf</link>
-                <guid isPermaLink="true">http://localhost:4000/modern-javascript-rdf</guid>
+                <link>http://utecht.github.io/modern-javascript-rdf</link>
+                <guid isPermaLink="true">http://utecht.github.io/modern-javascript-rdf</guid>
             </item>
         
             <item>
@@ -37,8 +37,8 @@
 </description>
                 
                             <pubDate>Tue, 09 Jun 2015 00:00:00 -0500</pubDate>
-                <link>http://localhost:4000/vimer</link>
-                <guid isPermaLink="true">http://localhost:4000/vimer</guid>
+                <link>http://utecht.github.io/vimer</link>
+                <guid isPermaLink="true">http://utecht.github.io/vimer</guid>
             </item>
         
             <item>
@@ -48,8 +48,8 @@
                     <description>In looking into the world of triple stores there, exists very little in the way of traditional web communities discussing and comparing them.  Most of the discussion appears to happen in academic journals, which would make sense as their widest us...</description>
                 
                             <pubDate>Fri, 05 Jun 2015 00:00:00 -0500</pubDate>
-                <link>http://localhost:4000/comparing-triplestores</link>
-                <guid isPermaLink="true">http://localhost:4000/comparing-triplestores</guid>
+                <link>http://utecht.github.io/comparing-triplestores</link>
+                <guid isPermaLink="true">http://utecht.github.io/comparing-triplestores</guid>
             </item>
         
             <item>
@@ -60,8 +60,8 @@
 </description>
                 
                             <pubDate>Wed, 27 May 2015 00:00:00 -0500</pubDate>
-                <link>http://localhost:4000/first-post</link>
-                <guid isPermaLink="true">http://localhost:4000/first-post</guid>
+                <link>http://utecht.github.io/first-post</link>
+                <guid isPermaLink="true">http://utecht.github.io/first-post</guid>
             </item>
         
     </channel>
