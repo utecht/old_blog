@@ -1,9 +1,9 @@
 ---
 layout: post
-title: Comparing Triplestores
-categories: [rdf, triplestores]
+title: Comparing Triple Stores
+categories: [rdf, triple stores]
 ---
-In looking into the world of triplestores there exists very little in the way of traditional web communities discussing and comparing them.  Most of the discussion appears to happen in academic journals, which would make sense as their widest use is in academia.  A good starting place is comparing some of the available triplestores with the goal of producing a modern web application that would ideally have a mostly javascript client-side that is querying and updating a triplestore on the backend.
+In looking into the world of triple stores there, exists very little in the way of traditional web communities discussing and comparing them.  Most of the discussion appears to happen in academic journals, which would make sense as their widest use is in academia.  A good starting place is comparing some of the available triple stores with the goal of producing a modern web application that would ideally have a mostly javascript client-side that is querying and updating a triple store on the backend.
 
 I picked a small sample of open source, actively maintained and easy to install stores to run through a series of tests.
 
@@ -14,7 +14,7 @@ I picked a small sample of open source, actively maintained and easy to install 
 | [Sesame](http://rdf4j.org/) | BSD | WAR | Java |
 | [Virtuoso](http://virtuoso.openlinksw.com/dataspace/doc/dav/wiki/Main/) | GPL | Native | C |
 
-Using these four I will compare them and discuss general merits that could be applied against any store you wish to test.  The categories will be.
+Using these four, I will compare them and discuss general merits that could be applied against any store you wish to test.  The categories will be.
 
 *  [Installation/Configuration](#conf)
 *  [Admin Interface](#admin)
@@ -27,7 +27,7 @@ Using these four I will compare them and discuss general merits that could be ap
 
 <a name="conf"></a>Installation/Configuration
 ===
-I wanted a similar environment for all of the testing, so I chose to deploy each of these into a Virtualbox VM with identical specs.  The host of these VMs was a mid 2012 Mac Pro with 2 x 2.4 Ghz 6-core Xeon processors and 16GB of ram.  Each VM was given 8GB of ram and 4 processors, and while performance tests were running only a single VM would be active at a time.  I chose CentOS 7 as the operating system and Tomcat as the application server for the stores that needed it.  Given the choice to run as a standalone or WAR file I used the WAR files with Tomcat.
+I wanted a similar environment for all of the testing, so I chose to deploy each of these into a Virtualbox VM with identical specs.  The host of these VMs was a mid 2012 Mac Pro with 2 x 2.4 GHz 6-core Xeon processors and 16GB of ram.  Each VM was given 8GB of ram and 4 processors, and while performance tests were running only a single VM would be active at a time.  I chose CentOS 7 as the operating system and Tomcat as the application server for the stores that needed it.  Given the choice to run as a standalone or WAR file I used the WAR files with Tomcat.
 
 #### Fuseki
 Fuseki is a web front-end provided for the Apache Jena RDF tools, I downloaded the [Fuseki2 tar](http://jena.apache.org/download/index.cgi) and followed the rather terse [installation instructions](http://jena.apache.org/documentation/fuseki2/fuseki-run.html#fuseki-as-a-web-application).
@@ -52,7 +52,7 @@ Installation was mostly straight forward, although due to my deployment setup on
 Blazegraph was another simple Java webserver deployment.  Following the instructions [here](http://www.blazegraph.com/download), I extracted the WAR and dropped it in Tomcat's folder.  After restarting Tomcat the admin interface was fully accessible and working.
 
 #### Sesame
-Sesame had the most complete [installation instructions](http://rdf4j.org/sesame/2.8/docs/using+sesame.docbook?view) and good descriptions of the different options for installation.  Sesame can be slightly confusing as it is used by other triplestores as middleware for programming interfaces or implementing REST, however it has a native triplestore built in and can function as a server on its own.  Installation was a simple matter of extracting the 2 WAR files into Tomcat's webapp folder and restarting.  After Tomcat launched back up both the SPARQL endpoint and the workbench were accessible. 
+Sesame had complete [installation instructions](http://rdf4j.org/sesame/2.8/docs/using+sesame.docbook?view) and good descriptions of the different options for installation.  Sesame can be slightly confusing as it is used by other triple stores as middleware for programming interfaces or implementing REST, however it has a native triple store built in and can function as a server on its own.  Installation was a simple matter of extracting the 2 WAR files into Tomcat's webapp folder and restarting.  After Tomcat launched back up both the SPARQL endpoint and the workbench were accessible. 
 
 #### Virtuoso
 Virtuoso was the only non-Java server I was testing, however with any experience compiling software its installation should be a breeze.  The requirements to build are clearly listed with versions in the [installation instructions](https://github.com/openlink/virtuoso-opensource) on the github repository.  After insuring they were all the proper version, the make and install went smoothly.  After finding the executable and pointing it to the default config the admin interface was accessible.
@@ -79,11 +79,11 @@ The sesame admin inferface comes from the workbench WAR file.  It allows you to 
 #### Virtuoso
 ![Virtuoso Admin Interface]({{ site.url }}/assets/virtuoso_admin.png)
 
-Compared to all the others the virtuoso admin interface is very confusing, and this is probably because virtuoso is not just a triplestore, but a relational database with a linked data component built in.  It can create graphs, and has tools to query and load them, but it is very heavy and prone to not working.
+Compared to all the others the virtuoso admin interface is very confusing, and this is probably because virtuoso is not just a triple store, but a relational database with a linked data component built in.  It can create graphs, and has tools to query and load them, but it is very heavy and prone to not working.
 
 <a name="loading"></a>Data Loading
 ===
-The first step after finishing basic set up of the triplestores was to attempt to load something into them and start querying it.  I was looking for a decently sized dataset with data that was not hard to understand to people outside the discipline.  I settled on the [Linked Movie Database dataset](http://datahub.io/dataset/linkedmdb) as it fulfilled all these requirements.  It is a set of roughly 600k triples in the N-triples format.
+The first step after finishing basic set up of the triple stores was to attempt to load something into them and start querying it.  I was looking for a decently sized dataset with data that was not hard to understand to people outside the discipline.  I settled on the [Linked Movie Database dataset](http://datahub.io/dataset/linkedmdb) as it fulfilled all these requirements.  It is a set of roughly 600k triples in the N-triples format.
 
 {% highlight n3 %}
 <http://data.linkedmdb.org/resource/interlink/36322> <http://data.linkedmdb.org/resource/oddlinker/linkage_run> <http://data.linkedmdb.org/resource/linkage_run/1> .
@@ -126,7 +126,7 @@ Virtuoso also allows file uploading through the admin interface.  I uploaded the
 
 <a name="exploration"></a>Data Exploration
 ===
-The ability to run queries from the admin interface and explore the data contained in the store is an important function for these triplestores as it replaces the functionality of browsing schemas in a traditional relational database.
+The ability to run queries from the admin interface and explore the data contained in the store is an important function for these triple stores as it replaces the functionality of browsing schemas in a traditional relational database.
 
 #### Fuseki
 ![Fuseki Query Interface]({{ site.url }}/assets/fuseki_query.png)
@@ -158,7 +158,7 @@ While investigating virtuoso's query interface I was having trouble finding a qu
 
 <a name="REST"></a>REST
 ===
-For my purposes this was the most important feature of these triplestores as it would be the only way the application would interact with the data.  I had need of both the ability to query and update the data in the store from a client-side javascript application.  Unfortunately due to the nature of RDF working directly client to triplestore is difficult.  In traditional RESTful APIs collections of members can be retrieved and then all properties of each member can be retrieved independently.  Because of the graph nature of RDF neither of these works quite the same from a REST point of view.  Take for example a graph storing information about books with this simple structure.
+For my purposes this was the most important feature of these triple stores as it would be the only way the application would interact with the data.  I had need of both the ability to query and update the data in the store from a client-side javascript application.  Unfortunately due to the nature of RDF working directly client to triple store is difficult.  In traditional RESTful APIs collections of members can be retrieved and then all properties of each member can be retrieved independently.  Because of the graph nature of RDF neither of these works quite the same from a REST point of view.  Take for example a graph storing information about books with this simple structure.
 
 
 {% highlight turtle %}
@@ -185,7 +185,7 @@ You can picture a simple API for viewing this data with a traditional REST frame
     /authors
     /author/:id
 
-This sort of REST API is not possible only using the triplestores I have been investigating.  They all have slightly different REST capabilities, but all share a few major shortcomings.
+This sort of REST API is not possible only using the triple stores I have been investigating.  They all have slightly different REST capabilities, but all share a few major shortcomings.
 
 
 #### Blazegraph
@@ -324,7 +324,7 @@ Results in the following json block are somewhat like the naive query seen above
 
 <a name="features"></a>RDF Feature Support
 ===
-When I speak of RDF features I mean any possible inference or reasoning that the triplestore can do based on any ontologies that have been loaded into the store.  Inferences and reasoning are similar but quite distinct things.  Inference generally refers RDF level types and classes being represented in the stored triples, while reasoning is applying an OWL reasoner to support more advanced constructs such as owl:sameAs.
+When I speak of RDF features I mean any possible inference or reasoning that the triple store can do based on any ontologies that have been loaded into the store.  Inferences and reasoning are similar but quite distinct things.  Inference generally refers RDF level types and classes being represented in the stored triples, while reasoning is applying an OWL reasoner to support more advanced constructs such as owl:sameAs.
 
 #### Fuseki
 The Jena engine has the largest coverage of both reasoning engines and inference models.  Both reasoning and inference are performed with query modification or virtual triples.  This results in slower queries with heavy reasoning or inference, but allows great flexibility.
